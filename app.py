@@ -123,7 +123,7 @@ def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path
     </head>
     <body>
         <div class="header">
-            <img src="/Users/martinjauma/Documents/CODIGO/ACADEMIA SAR/encSARAca.jpeg" alt="Encabezado">
+            <img src="images/encSARAca.jpeg" alt="Encabezado">
         </div>
         <div class="evaluation-title">
             <h1>EVALUACIÓN</h1>
