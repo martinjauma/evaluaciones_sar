@@ -1,14 +1,12 @@
 import streamlit as st
 from datetime import date
 import pandas as pd
+import pdfkit
 from config import DESCRIPCIONES_AREAS, EVALUADORES_AREAS
 from pymongo import MongoClient
 import config_mongo  # Importamos la configuración de MongoDB
 from babel.dates import format_date
-import pdfkit
 from datetime import datetime
-from weasyprint import HTML
-
 
 
 # Función para formatear la fecha en español
@@ -34,12 +32,9 @@ def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador):
     collection.insert_one(evaluacion_doc)
     print("Evaluación guardada en MongoDB")
 
-
-from weasyprint import HTML
-
 def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path):
     # Formateamos la fecha al estilo solicitado (solo mes y año)
-    fecha_formateada = datetime.strptime(datos['fecha'], "%d/%m/%Y").strftime("%B, %Y").capitalize()
+    fecha_formateada = formatear_fecha(datetime.strptime(datos['fecha'], "%d/%m/%Y"))
 
     html_content = f"""
     <!DOCTYPE html>
@@ -75,11 +70,6 @@ def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path
                 font-size: 18px;
                 margin: 0;
                 text-align: left;
-            }}
-            .evaluation-title .date {{
-                font-size: 12px;
-                color: #555;
-                text-align: right;
             }}
             .area {{
                 margin-bottom: 20px;
@@ -126,12 +116,6 @@ def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path
                 font-size: 12px;
                 margin-top: 10px;
             }}
-            .footer {{
-                margin-top: 50px;
-                font-size: 8px;
-                text-align: center;
-                color: #666;
-            }}
         </style>
     </head>
     <body>
@@ -169,23 +153,25 @@ def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path
             <p class="evaluador">{evaluador}</p>
         </div>
         <div class="date-footer">
-            <strong>FECHA:</strong> {fecha_formateada}
-        </div>
-        <div class="footer">
-            Generado por el sistema de Evaluación SAR | Páginas: 1 de 1
+            {fecha_formateada}
         </div>
     </body>
     </html>
     """
-
-    # Usar WeasyPrint para generar el PDF
-    HTML(string=html_content).write_pdf(output_path)
+    
+    # Configuramos pdfkit para que use tamaño A4 y agregamos la opción para mostrar el número de páginas
+    pdfkit.from_string(
+        html_content,
+        output_path,
+        options={
+            'enable-local-file-access': True,
+            'page-size': 'A4',
+            'footer-center': 'Generado por el sistema de Evaluación SAR |',
+            'footer-right': 'Páginas: [page] de [topage]',
+            'footer-font-size': '8',
+        }
+    )
     print(f"PDF generado en {output_path}")
-
-
-
-
-
 
 # Aplicación principal de Streamlit
 def main():
