@@ -7,7 +7,6 @@ import config_mongo  # Importamos la configuración de MongoDB
 from babel.dates import format_date
 import pdfkit
 from datetime import datetime
-from weasyprint import HTML
 
 
 # Función para formatear la fecha en español
