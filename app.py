@@ -3,13 +3,14 @@ from datetime import date
 import pandas as pd
 import pdfkit
 from config import DESCRIPCIONES_AREAS, EVALUADORES_AREAS
-from datetime import datetime
-import locale
 from pymongo import MongoClient
 import config_mongo  # Importamos la configuración de MongoDB
+from babel.dates import format_date
+from datetime import datetime
 
-# Cambiar la configuración regional a español (español de España)
-locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')  # Esto puede cambiar dependiendo de tu sistema operativo
+# Función para formatear la fecha en español
+def formatear_fecha(fecha):
+    return format_date(fecha, format='MMMM yyyy', locale='es')
 
 # Conexión a MongoDB usando la configuración desde config_mongo.py
 client = MongoClient(config_mongo.MONGO_URI)
@@ -32,7 +33,7 @@ def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador):
 
 def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path):
     # Formateamos la fecha al estilo solicitado (solo mes y año)
-    fecha_formateada = datetime.strptime(datos['fecha'], "%d/%m/%Y").strftime("%B, %Y").capitalize()
+    fecha_formateada = formatear_fecha(datetime.strptime(datos['fecha'], "%d/%m/%Y"))
 
     html_content = f"""
     <!DOCTYPE html>
@@ -67,12 +68,7 @@ def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path
                 color: #0a0a45;
                 font-size: 18px;
                 margin: 0;
-                text-align: left;  /* Alinea EVALUACIÓN a la izquierda */
-            }}
-            .evaluation-title .date {{
-                font-size: 12px;
-                color: #555;
-                text-align: right;  /* Alinea FECHA a la derecha */
+                text-align: left;
             }}
             .area {{
                 margin-bottom: 20px;
@@ -168,10 +164,10 @@ def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path
         output_path,
         options={
             'enable-local-file-access': True,
-            'page-size': 'A4',  # Aseguramos que el tamaño de página sea A4
-            'footer-center': 'Generado por el sistema de Evaluación SAR |',  # Pie de página centrado
-            'footer-right': 'Páginas: [page] de [topage]',  # Muestra el número de páginas en el pie de página
-            'footer-font-size': '8',  # Ajustamos el tamaño de la fuente del pie de página a 10px
+            'page-size': 'A4',
+            'footer-center': 'Generado por el sistema de Evaluación SAR |',
+            'footer-right': 'Páginas: [page] de [topage]',
+            'footer-font-size': '8',
         }
     )
     print(f"PDF generado en {output_path}")
@@ -192,7 +188,6 @@ def main():
     else:
         contacto, celular, union = "", "", ""
 
-    # Mostrar en el sidebar el nombre del evaluador basado en el área seleccionada
     evaluador = EVALUADORES_AREAS.get(area, "Evaluador no asignado")
     st.sidebar.text_input("Evaluador", value=evaluador, disabled=True)
 
@@ -226,7 +221,6 @@ def main():
         output_path = "evaluacion_final.pdf"
         generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path)
 
-        # Guardar en MongoDB
         guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
 
         with open(output_path, "rb") as pdf_file:
