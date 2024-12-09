@@ -1,4 +1,3 @@
-weasyprint
 pdfkit
 streamlit
 pymongo
