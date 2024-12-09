@@ -1,14 +1,13 @@
 import streamlit as st
 from datetime import date
 import pandas as pd
-import pdfkit
 from config import DESCRIPCIONES_AREAS, EVALUADORES_AREAS
 from pymongo import MongoClient
 import config_mongo  # Importamos la configuración de MongoDB
 from babel.dates import format_date
+import pdfkit
 from datetime import datetime
 from weasyprint import HTML
-
 
 
 # Función para formatear la fecha en español
@@ -72,12 +71,12 @@ def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path
                 color: #0a0a45;
                 font-size: 18px;
                 margin: 0;
-                text-align: left;  /* Alinea EVALUACIÓN a la izquierda */
+                text-align: left;
             }}
             .evaluation-title .date {{
                 font-size: 12px;
                 color: #555;
-                text-align: right;  /* Alinea FECHA a la derecha */
+                text-align: right;
             }}
             .area {{
                 margin-bottom: 20px;
@@ -126,7 +125,7 @@ def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path
             }}
             .footer {{
                 margin-top: 50px;
-                font-size: 8px; /* Tamaño de fuente ajustado */
+                font-size: 8px;
                 text-align: center;
                 color: #666;
             }}
@@ -175,9 +174,16 @@ def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path
     </body>
     </html>
     """
-    # Usamos WeasyPrint para generar el PDF
-    HTML(string=html_content).write_pdf(output_path)
+
+    # Configuramos el ejecutable de wkhtmltopdf
+    path_to_wkhtmltopdf = '/usr/local/bin/wkhtmltopdf'  # Asegúrate de que la ruta sea correcta
+    config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
+
+    # Usamos pdfkit con la configuración de wkhtmltopdf para generar el PDF
+    pdfkit.from_string(html_content, output_path, configuration=config)
     print(f"PDF generado en {output_path}")
+
+
 
 
 
