@@ -7,6 +7,8 @@ import config_mongo  # Importamos la configuración de MongoDB
 from babel.dates import format_date
 import pdfkit
 from datetime import datetime
+from weasyprint import HTML
+
 
 
 # Función para formatear la fecha en español
@@ -32,6 +34,8 @@ def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador):
     collection.insert_one(evaluacion_doc)
     print("Evaluación guardada en MongoDB")
 
+
+from weasyprint import HTML
 
 def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path):
     # Formateamos la fecha al estilo solicitado (solo mes y año)
@@ -174,13 +178,10 @@ def generar_pdf_con_html(datos, evaluaciones, conclusion, evaluador, output_path
     </html>
     """
 
-    # Configuramos el ejecutable de wkhtmltopdf
-    path_to_wkhtmltopdf = '/usr/local/bin/wkhtmltopdf'  # Asegúrate de que la ruta sea correcta
-    config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
-
-    # Usamos pdfkit con la configuración de wkhtmltopdf para generar el PDF
-    pdfkit.from_string(html_content, output_path, configuration=config)
+    # Usar WeasyPrint para generar el PDF
+    HTML(string=html_content).write_pdf(output_path)
     print(f"PDF generado en {output_path}")
+
 
 
 

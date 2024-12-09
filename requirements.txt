@@ -1,5 +1,4 @@
-pdfkit
+weasyprint
 streamlit
 pymongo
 babel
-weasyprint
