@@ -1,6 +1,5 @@
 aiohttp==3.9.5
 aiosignal==1.3.1
-alabaster @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_fadeblw4_u/croot/alabaster_1718201487017/work
 altair==5.1.2
 anaconda-anon-usage @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_9abq1vdv2c/croot/anaconda-anon-usage_1732732441000/work
 anaconda-cli-base @ file:///private/var/folders/c_/qfmhj66j0tn016nkx_th4hxm0000gp/T/abs_f9h9dq3b7k/croot/anaconda-cli-base_1731510913104/work
