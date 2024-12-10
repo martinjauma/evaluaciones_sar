@@ -27,7 +27,7 @@ def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador):
         "area": datos["area"],
         "fecha": datetime.now(),
         "evaluador": evaluador,
-        "evaluaciones": evaluaciones,
+        "evaluaciones": evaluaciones,  # Incluye las calificaciones y observaciones
         "conclusion": conclusion
     }
     collection.insert_one(evaluacion_doc)
@@ -39,10 +39,11 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     styles = getSampleStyleSheet()
 
     # Estilos personalizados
-    styles.add(ParagraphStyle(name="CustomTitle", fontSize=14, alignment=0, textColor=colors.HexColor("#0A0A45"),fontName="Helvetica-Bold"))
-    styles.add(ParagraphStyle(name="CustomSubtitle", fontSize=11, spaceAfter=10, textColor=colors.goldenrod,fontName="Helvetica-Bold"))
+    styles.add(ParagraphStyle(name="CustomTitle", fontSize=14, alignment=0, textColor=colors.HexColor("#0A0A45"), fontName="Helvetica-Bold"))
+    styles.add(ParagraphStyle(name="CustomSubtitle", fontSize=11, spaceAfter=10, textColor=colors.goldenrod, fontName="Helvetica-Bold"))
     styles.add(ParagraphStyle(name="CustomFooter", fontSize=10, alignment=2, textColor=colors.grey))
-    styles.add(ParagraphStyle(name="TableCell", fontSize=10, alignment=0, leading=12))
+    styles.add(ParagraphStyle(name="TableCell", fontSize=10, alignment=0, leading=12))  # Fuente 10 para celdas normales
+    styles.add(ParagraphStyle(name="TableCellLarge", fontSize=14, alignment=1, leading=16))  # Fuente más grande para las clasificaciones (centro)
 
     elements = []
 
@@ -56,7 +57,7 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
 
     # Título EVALUACIÓN con la fecha en la misma fila
     elements.append(Spacer(1, 5))
-    
+
     # Obtener la fecha desde los datos y formatearla en español
     fecha_original = datos['fecha']  # Asume que 'fecha' está en formato "DD/MM/YYYY"
     fecha_objeto = datetime.strptime(fecha_original, "%d/%m/%Y")
@@ -65,12 +66,12 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     # Convertir el mes a español utilizando babel (si es necesario)
     fecha_formateada = format_date(fecha_objeto, format='MMMM yyyy', locale='es').capitalize()
     # Usar una tabla para alinear perfectamente EVALUACIÓN y la fecha
-    
+
     # Crear una tabla para el encabezado con EVALUACIÓN y Fecha
     header_table_data = [
         [Paragraph("<b>EVALUACIÓN</b>", styles["CustomTitle"]),
-         Paragraph(f"{fecha_formateada}", ParagraphStyle(name="DateStyle", fontSize=10, alignment=2))]
-]
+         Paragraph(f"{fecha_formateada}", ParagraphStyle(name="DateStyle", fontSize=11, alignment=2))]
+    ]
 
     header_table = Table(header_table_data, colWidths=[300, 200])  # Ajusta el ancho de las columnas
     header_table.setStyle(TableStyle([
@@ -98,7 +99,7 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     elements.append(Spacer(1, 20))
     table_data = [["Descripción", "Calificación", "Observaciones"]] + [
         [Paragraph(e["descripcion"], styles["TableCell"]),
-         Paragraph(str(e["calificacion"]), styles["TableCell"]),
+         Paragraph(str(e["calificacion"]), styles["TableCellLarge"]),  # Fuente más grande y centrada para clasificación
          Paragraph(e["observaciones"], styles["TableCell"])] for e in evaluaciones
     ]
     table = Table(table_data, colWidths=[200, 100, 200])
@@ -113,14 +114,25 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     ]))
     elements.append(table)
 
+    # Total de calificaciones
+    total_calificaciones = sum(e["calificacion"] for e in evaluaciones)
+    elements.append(Spacer(1, 20))
+    elements.append(Paragraph(f"<b>Total:</b> {total_calificaciones}", ParagraphStyle(name="CustomFooter", fontSize=14, alignment=1, textColor=colors.black)))
+
     # Conclusión y Evaluador
     elements.append(Spacer(1, 20))
     elements.append(Paragraph(f"<b>Conclusión:</b> {conclusion}", styles["Normal"]))
     elements.append(Spacer(1, 10))
     elements.append(Paragraph(f"{evaluador}", styles["CustomFooter"]))
 
-    doc.build(elements)
+    # Añadir el número de páginas
+    doc.build(elements, onFirstPage=add_page_number, onLaterPages=add_page_number)
     print(f"PDF generado en {output_path}")
+
+# Función para agregar el número de páginas al pie de cada página
+def add_page_number(canvas, doc):
+    canvas.setFont("Helvetica", 8)
+    canvas.drawString(520, 10, f"Página {canvas.getPageNumber()}")
 
 # Aplicación principal de Streamlit
 def main():
@@ -130,6 +142,8 @@ def main():
 
     area = st.sidebar.selectbox("Área de Evaluación", list(DESCRIPCIONES_AREAS.keys()))
     participantes_area = df_participantes[df_participantes["AREA"] == area]
+    evaluador = EVALUADORES_AREAS.get(area, "Evaluador no asignado")
+    st.sidebar.text_input("Evaluador", value=evaluador, disabled=True)
     nombre = st.sidebar.selectbox("Nombre del Evaluado", participantes_area["NOMBRE"].unique())
 
     if nombre:
@@ -138,20 +152,40 @@ def main():
     else:
         contacto, celular, union = "", "", ""
 
-    evaluador = EVALUADORES_AREAS.get(area, "Evaluador no asignado")
-    st.sidebar.text_input("Evaluador", value=evaluador, disabled=True)
-
     descripciones = DESCRIPCIONES_AREAS[area]
     evaluaciones = []
     suma_calificaciones = 0
 
     for descripcion in descripciones:
-        calificacion = st.number_input(f"Calificación ({descripcion})", 0, 5, key=f"cal_{descripcion}")
-        observaciones = st.text_area(f"Observaciones ({descripcion})", key=f"obs_{descripcion}")
-        evaluaciones.append({"descripcion": descripcion, "calificacion": calificacion, "observaciones": observaciones})
-        suma_calificaciones += calificacion
+        # Cambiar input de número a texto (solo aceptando 0, 1, 2, 3, 4, 5)
+        calificacion = st.text_input(f"Calificación ({descripcion})", value="", key=f"cal_{descripcion}")
+        observaciones = st.text_area(f"Observaciones", key=f"obs_{descripcion}")
+        
+        # Solo aceptar valores de "0", "1", "2", "3", "4", "5"
+        if calificacion in ['0', '1', '2', '3', '4', '5']:
+            evaluaciones.append({"descripcion": descripcion, "calificacion": int(calificacion), "observaciones": observaciones})
+            suma_calificaciones += int(calificacion)
+        elif calificacion != "":  # Mostrar advertencia si el valor no es permitido
+            st.warning("Solo se permiten los valores 0, 1, 2, 3, 4, 5 para las calificaciones.")
 
-    st.sidebar.write(f"**Total de Calificaciones: {suma_calificaciones} puntos**")
+        # Separar cada bloque con una línea
+        st.markdown("---")
+
+    # Mostrar suma de calificaciones con colores condicionales
+    if suma_calificaciones <= 29:
+        color = "red"
+    elif 30 <= suma_calificaciones <= 40:
+        color = "yellow"
+    else:
+        color = "green"
+        
+    # Información del evaluado en el sidebar
+    st.sidebar.write(f"**Correo Electrónico:** {contacto}")
+    st.sidebar.write(f"**Número de Celular:** {celular}")
+    st.sidebar.write(f"**Unión/Federación:** {union}")
+
+    # Mostrar la suma de calificaciones con el KPI en el sidebar
+    st.sidebar.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones} puntos</h1>", unsafe_allow_html=True)
 
     conclusion = st.text_area("Conclusión de la Evaluación")
 
@@ -168,7 +202,6 @@ def main():
         generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path)
 
         guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
-
 
         with open(output_path, "rb") as pdf_file:
             st.download_button(label="Descargar Evaluación (PDF)", data=pdf_file, file_name="EvaluacionFinal.pdf", mime="application/pdf")

@@ -7,7 +7,6 @@ DESCRIPCIONES_AREAS = {
         "Toma de decisión / Resolución de problemas.",
         "Puntualidad y compromiso.",
         "Habilidades Comunicacionales.",
-        "Jugadores, Staff, Extras.",
         "Trabajo en equipo, con pares, resto de staff.",
         "Comunicación Visual.",
         "Datos y estadísticas.",
@@ -115,7 +114,7 @@ DESCRIPCIONES_AREAS = {
 
 # Diccionario de evaluadores por área
 EVALUADORES_AREAS = {
-    "Video & Análisis": "Martin Jauma",
+    "Video & Análisis": "Martín Jauma",
     "Coaching": "D. Hourcade, L. Piña, P. Perez, R. Perez, R. Le Fort, Duran, P. Bouza, E. Meneses, Guzman.",
     "Fisio": "Lic. Martín Nuñez",
     "Logística & Utilería": "Javier Sorbera",
