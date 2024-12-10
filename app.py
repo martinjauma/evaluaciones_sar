@@ -10,6 +10,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import Image
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 # Función para formatear la fecha en español
 def formatear_fecha(fecha):
@@ -22,6 +24,11 @@ collection = db[config_mongo.COLLECTION_NAME]  # Usamos el nombre de la colecci�
 
 # Guardar evaluación en MongoDB
 def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador):
+    # Asegurarse de que todas las descripciones estén en evaluaciones, si no tienen calificación asignada se les da un 0
+    for e in DESCRIPCIONES_AREAS[datos["area"]]:
+        if not any(ev["descripcion"] == e for ev in evaluaciones):
+            evaluaciones.append({"descripcion": e, "calificacion": 0, "observaciones": ""})
+    
     evaluacion_doc = {
         "nombre": datos["nombre"],
         "area": datos["area"],
@@ -33,6 +40,16 @@ def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador):
     collection.insert_one(evaluacion_doc)
     print("Evaluación guardada en MongoDB")
 
+# Función para agregar número de páginas al pie de cada página
+def add_page_number(canvas, doc):
+    canvas.saveState()
+    page_number = canvas.getPageNumber()  # Número de la página actual
+    total_pages = page_number  # Usar la misma página actual hasta que se construya el documento
+    canvas.setFont("Helvetica", 8)
+    canvas.drawString(520, 10, f"Página {page_number} de {total_pages}")  # Coloca el número de página en el pie
+    canvas.drawCentredString(300, 10, "Generado por el sistema de Evaluación SAR |")  # Texto centrado
+    canvas.restoreState()
+
 # Generar PDF con ReportLab
 def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path):
     doc = SimpleDocTemplate(output_path, pagesize=A4, leftMargin=40, rightMargin=40, topMargin=40, bottomMargin=40)
@@ -42,8 +59,7 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     styles.add(ParagraphStyle(name="CustomTitle", fontSize=14, alignment=0, textColor=colors.HexColor("#0A0A45"), fontName="Helvetica-Bold"))
     styles.add(ParagraphStyle(name="CustomSubtitle", fontSize=11, spaceAfter=10, textColor=colors.goldenrod, fontName="Helvetica-Bold"))
     styles.add(ParagraphStyle(name="CustomFooter", fontSize=10, alignment=2, textColor=colors.grey))
-    styles.add(ParagraphStyle(name="TableCell", fontSize=10, alignment=0, leading=12))  # Fuente 10 para celdas normales
-    styles.add(ParagraphStyle(name="TableCellLarge", fontSize=14, alignment=1, leading=16))  # Fuente más grande para las clasificaciones (centro)
+    styles.add(ParagraphStyle(name="TableCell", fontSize=10, alignment=0, leading=12))
 
     elements = []
 
@@ -99,7 +115,7 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     elements.append(Spacer(1, 20))
     table_data = [["Descripción", "Calificación", "Observaciones"]] + [
         [Paragraph(e["descripcion"], styles["TableCell"]),
-         Paragraph(str(e["calificacion"]), styles["TableCellLarge"]),  # Fuente más grande y centrada para clasificación
+         Paragraph(str(e["calificacion"]), styles["TableCell"]),
          Paragraph(e["observaciones"], styles["TableCell"])] for e in evaluaciones
     ]
     table = Table(table_data, colWidths=[200, 100, 200])
@@ -114,10 +130,10 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     ]))
     elements.append(table)
 
-    # Total de calificaciones
+    # Total de calificaciones (más grande)
+    elements.append(Spacer(1, 10))
     total_calificaciones = sum(e["calificacion"] for e in evaluaciones)
-    elements.append(Spacer(1, 20))
-    elements.append(Paragraph(f"<b>Total:</b> {total_calificaciones}", ParagraphStyle(name="CustomFooter", fontSize=14, alignment=1, textColor=colors.black)))
+    elements.append(Paragraph(f"<b>Total:</b> {total_calificaciones}", styles["CustomTitle"]))
 
     # Conclusión y Evaluador
     elements.append(Spacer(1, 20))
@@ -125,14 +141,9 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     elements.append(Spacer(1, 10))
     elements.append(Paragraph(f"{evaluador}", styles["CustomFooter"]))
 
-    # Añadir el número de páginas
+    # Agregar número de página al footer
     doc.build(elements, onFirstPage=add_page_number, onLaterPages=add_page_number)
     print(f"PDF generado en {output_path}")
-
-# Función para agregar el número de páginas al pie de cada página
-def add_page_number(canvas, doc):
-    canvas.setFont("Helvetica", 8)
-    canvas.drawString(520, 10, f"Página {canvas.getPageNumber()}")
 
 # Aplicación principal de Streamlit
 def main():
