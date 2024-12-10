@@ -103,11 +103,12 @@ DESCRIPCIONES_AREAS = {
         "Toma de decisión / Resolución de problemas", 
         "Gestión del tiempo y compromiso", 
         "Habilidades Comunicacionales Jugadores, Staff, Extras", 
-        "Trabajo en equipo, con pares, resto de staff Nivel de formación en Nutrición Deportiva", 
+        "Trabajo en equipo, con pares, resto de staff", 
+        "Nivel de formación en Nutrición Deportiva", 
         "Manejo protocolo ISAK 2 para medir", 
         "Interpretación antropométrica",
-        "Manejo de herramientas tecnológicas, informáticas, etc.", 
-
+        "Manejo de herramientas tecnológicas, informáticas, etc.",
+        "Conocimiento del juego y de preparación física",
 
     ],
 }
