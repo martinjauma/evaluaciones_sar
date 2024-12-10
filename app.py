@@ -39,9 +39,9 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     styles = getSampleStyleSheet()
 
     # Estilos personalizados
-    styles.add(ParagraphStyle(name="CustomTitle", fontSize=14, alignment=0, textColor=colors.HexColor("#0A0A45")))
-    styles.add(ParagraphStyle(name="CustomSubtitle", fontSize=12, spaceAfter=10, textColor=colors.black))
-    styles.add(ParagraphStyle(name="CustomFooter", fontSize=8, alignment=2, textColor=colors.grey))
+    styles.add(ParagraphStyle(name="CustomTitle", fontSize=14, alignment=0, textColor=colors.HexColor("#0A0A45"),fontName="Helvetica-Bold"))
+    styles.add(ParagraphStyle(name="CustomSubtitle", fontSize=11, spaceAfter=10, textColor=colors.goldenrod,fontName="Helvetica-Bold"))
+    styles.add(ParagraphStyle(name="CustomFooter", fontSize=10, alignment=2, textColor=colors.grey))
     styles.add(ParagraphStyle(name="TableCell", fontSize=10, alignment=0, leading=12))
 
     elements = []
@@ -54,14 +54,43 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     except IOError:
         elements.append(Paragraph("<b>Encabezado no disponible</b>", styles["Normal"]))
 
-    # Título EVALUACIÓN
-    elements.append(Spacer(1, 20))
-    elements.append(Paragraph("EVALUACIÓN", styles["CustomTitle"]))
+    # Título EVALUACIÓN con la fecha en la misma fila
+    elements.append(Spacer(1, 5))
+    
+    # Obtener la fecha desde los datos y formatearla en español
+    fecha_original = datos['fecha']  # Asume que 'fecha' está en formato "DD/MM/YYYY"
+    fecha_objeto = datetime.strptime(fecha_original, "%d/%m/%Y")
+    fecha_formateada = fecha_objeto.strftime("%B, %Y")  # "diciembre, 2024" en español
+
+    # Convertir el mes a español utilizando babel (si es necesario)
+    fecha_formateada = format_date(fecha_objeto, format='MMMM yyyy', locale='es').capitalize()
+    # Usar una tabla para alinear perfectamente EVALUACIÓN y la fecha
+    
+    # Crear una tabla para el encabezado con EVALUACIÓN y Fecha
+    header_table_data = [
+        [Paragraph("<b>EVALUACIÓN</b>", styles["CustomTitle"]),
+         Paragraph(f"{fecha_formateada}", ParagraphStyle(name="DateStyle", fontSize=10, alignment=2))]
+]
+
+    header_table = Table(header_table_data, colWidths=[300, 200])  # Ajusta el ancho de las columnas
+    header_table.setStyle(TableStyle([
+        ("ALIGN", (0, 0), (0, 0), "LEFT"),  # Alinear "EVALUACIÓN" a la izquierda
+        ("ALIGN", (1, 0), (1, 0), "RIGHT"),  # Alinear fecha a la derecha
+        ("LEFTPADDING", (0, 0), (-1, -1), 0),  # Sin relleno izquierdo
+        ("RIGHTPADDING", (0, 0), (-1, -1), 0),  # Sin relleno derecho
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),  # Alinear verticalmente en la parte superior
+        ("TOPPADDING", (0, 0), (-1, -1), 0),  # Sin espacio superior
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 0),  # Sin espacio inferior
+    ]))
+
+    elements.append(header_table)  # Agregar la tabla
+    elements.append(Spacer(1, 5))  # Espacio reducido entre "EVALUACIÓN" y "ÁREA"
 
     # Información del evaluado
-    elements.append(Spacer(1, 10))
+    elements.append(Spacer(1, 5))
     elements.append(Paragraph(f"<b>Área:</b> {datos['area']}", styles["CustomSubtitle"]))
-    elements.append(Spacer(1, 10))
+    elements.append(Spacer(1, 5))
+    elements.append(Paragraph(f"<b>Nombre:</b> {datos['nombre']}", styles["Normal"]))
     elements.append(Paragraph(f"<b>Contacto:</b> {datos['email']} | <b>Celular:</b> {datos['celular']}", styles["Normal"]))
     elements.append(Paragraph(f"<b>Unión/Federación:</b> {datos['uni']}", styles["Normal"]))
 
@@ -88,7 +117,7 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     elements.append(Spacer(1, 20))
     elements.append(Paragraph(f"<b>Conclusión:</b> {conclusion}", styles["Normal"]))
     elements.append(Spacer(1, 10))
-    elements.append(Paragraph(f"<b>Evaluador:</b> {evaluador}", styles["CustomFooter"]))
+    elements.append(Paragraph(f"{evaluador}", styles["CustomFooter"]))
 
     doc.build(elements)
     print(f"PDF generado en {output_path}")
