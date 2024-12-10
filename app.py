@@ -10,7 +10,6 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import Image
-from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
 # Función para formatear la fecha en español
@@ -44,7 +43,7 @@ def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador):
 def add_page_number(canvas, doc):
     canvas.saveState()
     page_number = canvas.getPageNumber()  # Número de la página actual
-    total_pages = page_number  # Usar la misma página actual hasta que se construya el documento
+    total_pages = canvas.getPageNumber()  # Este valor lo mantenemos igual hasta el final
     canvas.setFont("Helvetica", 8)
     canvas.drawString(520, 10, f"Página {page_number} de {total_pages}")  # Coloca el número de página en el pie
     canvas.drawCentredString(300, 10, "Generado por el sistema de Evaluación SAR |")  # Texto centrado
@@ -59,7 +58,8 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     styles.add(ParagraphStyle(name="CustomTitle", fontSize=14, alignment=0, textColor=colors.HexColor("#0A0A45"), fontName="Helvetica-Bold"))
     styles.add(ParagraphStyle(name="CustomSubtitle", fontSize=11, spaceAfter=10, textColor=colors.goldenrod, fontName="Helvetica-Bold"))
     styles.add(ParagraphStyle(name="CustomFooter", fontSize=10, alignment=2, textColor=colors.grey))
-    styles.add(ParagraphStyle(name="TableCell", fontSize=10, alignment=0, leading=12))
+    styles.add(ParagraphStyle(name="TableCell", fontSize=8, alignment=0, leading=12))  # Tamaño de fuente para descripción y observaciones
+    styles.add(ParagraphStyle(name="ClassificacionCell", fontSize=12, alignment=1, leading=12))  # Tamaño de fuente para clasificación (centrado)
 
     elements = []
 
@@ -81,7 +81,6 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
 
     # Convertir el mes a español utilizando babel (si es necesario)
     fecha_formateada = format_date(fecha_objeto, format='MMMM yyyy', locale='es').capitalize()
-    # Usar una tabla para alinear perfectamente EVALUACIÓN y la fecha
 
     # Crear una tabla para el encabezado con EVALUACIÓN y Fecha
     header_table_data = [
@@ -115,7 +114,7 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     elements.append(Spacer(1, 20))
     table_data = [["Descripción", "Calificación", "Observaciones"]] + [
         [Paragraph(e["descripcion"], styles["TableCell"]),
-         Paragraph(str(e["calificacion"]), styles["TableCell"]),
+         Paragraph(str(e["calificacion"]), styles["ClassificacionCell"]),  # Centrado y más grande
          Paragraph(e["observaciones"], styles["TableCell"])] for e in evaluaciones
     ]
     table = Table(table_data, colWidths=[200, 100, 200])
