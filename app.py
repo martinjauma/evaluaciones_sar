@@ -146,6 +146,12 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
 
 # Aplicación principal de Streamlit
 def main():
+    
+    # Ruta de la imagen del logo
+    logo_path = "images/Hori_D_blanco_SAR.png"  # Cambia esta ruta si es necesario
+
+    # Mostrar el logo en la barra lateral
+    st.sidebar.image(logo_path, use_column_width=True)  # El logo se ajusta al ancho de la columna
     st.title("Generador de Evaluaciones")
     PARTICIPANTES_CSV_PATH = "SAR 2024 ACADEMIA HP/Participantes x Areas.csv"
     df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH)
