@@ -151,7 +151,7 @@ def main():
     logo_path = "images/Hori_D_blanco_SAR.png"  # Cambia esta ruta si es necesario
 
     # Mostrar el logo en la barra lateral
-    st.sidebar.image(logo_path, use_container_width=True)  # El logo se ajusta al ancho de la columna
+    st.sidebar.image(logo_path, width=200)  # Ajusta el ancho de la imagen manualmente
     st.title("Generador de Evaluaciones")
     PARTICIPANTES_CSV_PATH = "SAR 2024 ACADEMIA HP/Participantes x Areas.csv"
     df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH)
