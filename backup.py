@@ -151,8 +151,7 @@ def main():
     logo_path = "images/Hori_D_blanco_SAR.png"  # Cambia esta ruta si es necesario
 
     # Mostrar el logo en la barra lateral
-    st.sidebar.image(logo_path,  use_container_width=True) # El logo se ajusta al ancho de la columna
-    
+    st.sidebar.image(logo_path, width=200)  # Ajusta el ancho de la imagen manualmente
     st.title("Generador de Evaluaciones")
     PARTICIPANTES_CSV_PATH = "SAR 2024 ACADEMIA HP/Participantes x Areas.csv"
     df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH)
@@ -173,9 +172,25 @@ def main():
     evaluaciones = []
     suma_calificaciones = 0
 
+
+    # CSS personalizado para aumentar el tamaño de las descripciones
+    st.markdown(
+        """
+        <style>
+        .descripcion-grande {
+            font-size: 30px; /* Cambia el tamaño según tu preferencia */
+            font-weight: bold;
+            color: #fff; /* Ajusta el color si es necesario */
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
     for descripcion in descripciones:
+        # Mostrar descripción con estilo personalizado
+        st.markdown(f'<p class="descripcion-grande">{descripcion}</p>', unsafe_allow_html=True)
         # Cambiar input de número a texto (solo aceptando 0, 1, 2, 3, 4, 5)
-        calificacion = st.text_input(f"Calificación ({descripcion})", value="", key=f"cal_{descripcion}")
+        calificacion = st.text_input(f"Puntaje 0 al 5", value="", key=f"cal_{descripcion}")
         observaciones = st.text_area(f"Observaciones", key=f"obs_{descripcion}")
         
         # Solo aceptar valores de "0", "1", "2", "3", "4", "5"
@@ -221,7 +236,7 @@ def main():
         guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
 
         with open(output_path, "rb") as pdf_file:
-            st.download_button(label="Descargar Evaluación (PDF)", data=pdf_file, file_name="EvaluacionFinal.pdf", mime="application/pdf")
+            st.download_button(label="Descargar Evaluación (PDF)", data=pdf_file, file_name=f"{datos['area']}-{datos['nombre']}-{datos['uni']}.pdf", mime="application/pdf")
 
 if __name__ == "__main__":
     main()
