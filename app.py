@@ -236,7 +236,7 @@ def main():
         guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
 
         with open(output_path, "rb") as pdf_file:
-            st.download_button(label="Descargar Evaluación (PDF)", data=pdf_file, file_name="EvaluacionFinal.pdf", mime="application/pdf")
+            st.download_button(label="Descargar Evaluación (PDF)", data=pdf_file, file_name=f"{datos['area']}-{datos['nombre']}-{datos['uni']}.pdf", mime="application/pdf")
 
 if __name__ == "__main__":
     main()
