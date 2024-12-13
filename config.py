@@ -116,13 +116,13 @@ DESCRIPCIONES_AREAS = {
 #MAJ Este diccionario es para poner en AREA y el Evaluador de esa Area
 # Diccionario de evaluadores por área
 EVALUADORES_AREAS = {
-    "Video & Análisis": "Martín Jauma",
     "Coaching": "D. Hourcade, L. Piña, P. Perez, R. Perez, R. Le Fort, Duran, P. Bouza, E. Meneses, Guzman.",
     "Fisio": "Lic. Martín Nuñez",
     "Logística & Utilería": "Javier Sorbera",
     "Match Official": "Juan Sylvestre",
     "Médico": "Dr. Juan Pablo Toledo",
+    "Nutrición": "Lic. Romina Garavaglia",
     "Preparación Física": "Gonzalo Santos",
     "Team Manager": "Juan Manuel García",
-    "Nutrición": "Lic. Romina Garavaglia",
+    "Video & Análisis": "Martín Jauma",   
 }
