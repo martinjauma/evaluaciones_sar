@@ -154,9 +154,8 @@ def main():
     # Mostrar el logo en la barra lateral
     st.sidebar.image(logo_path, width=200)  # Ajusta el ancho de la imagen manualmente
     st.title("Generador de Evaluaciones")
-    PARTICIPANTES_CSV_PATH = "SAR 2024 ACADEMIA HP/Participantes x Areas.csv"
-    df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH)
-
+    PARTICIPANTES_CSV_PATH = "SAR 2024 ACADEMIA HP/Participantes x Areas.csv" #MAJ CSV DE LOS PARTICIPANTES A EVALUAR
+    df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH) 
     area = st.sidebar.selectbox("Área de Evaluación", list(DESCRIPCIONES_AREAS.keys()))
     participantes_area = df_participantes[df_participantes["AREA"] == area]
     evaluador = EVALUADORES_AREAS.get(area, "Evaluador no asignado")
