@@ -1,6 +1,7 @@
 # config.py
 
 # Descripciones por área
+#MAJ Aca tenemos todas los detalles de la evaluacion, si quiero hacer alguna cambio es aca
 DESCRIPCIONES_AREAS = {
     "Video & Análisis": [
         "Creatividad / Proactividad.",
@@ -112,7 +113,7 @@ DESCRIPCIONES_AREAS = {
 
     ],
 }
-
+#MAJ Este diccionario es para poner en AREA y el Evaluador de esa Area
 # Diccionario de evaluadores por área
 EVALUADORES_AREAS = {
     "Video & Análisis": "Martín Jauma",

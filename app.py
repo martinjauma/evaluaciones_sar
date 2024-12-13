@@ -24,7 +24,7 @@ collection = db[config_mongo.COLLECTION_NAME]  # Usamos el nombre de la colecci�
 # Guardar evaluación en MongoDB
 def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador):
     # Asegurarse de que todas las descripciones estén en evaluaciones, si no tienen calificación asignada se les da un 0
-    for e in DESCRIPCIONES_AREAS[datos["area"]]:
+    for e in DESCRIPCIONES_AREAS[datos["area"]]: #MAJ para cambiar DESCRIPCIONES_AREAS esta en Config.py
         if not any(ev["descripcion"] == e for ev in evaluaciones):
             evaluaciones.append({"descripcion": e, "calificacion": 0, "observaciones": ""})
     
@@ -62,7 +62,8 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     styles.add(ParagraphStyle(name="ClassificacionCell", fontSize=12, alignment=1, leading=12))  # Tamaño de fuente para clasificación (centrado)
 
     elements = []
-
+    
+    #MAJ CAMBIA AÑO A AÑO EL ENCABEZADO del pdf SE LO PIDO A Darda!
     # Encabezado con imagen
     header_image = "images/encSARAca.jpeg"
     try:
@@ -147,7 +148,7 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
 # Aplicación principal de Streamlit
 def main():
     
-    # Ruta de la imagen del logo
+    #MAJ Ruta de la imagen del logo EN LA APP
     logo_path = "images/Hori_D_blanco_SAR.png"  # Cambia esta ruta si es necesario
 
     # Mostrar el logo en la barra lateral
@@ -173,7 +174,7 @@ def main():
     suma_calificaciones = 0
 
 
-    # CSS personalizado para aumentar el tamaño de las descripciones
+    #MAJ CSS personalizado para aumentar el tamaño de las descripciones EN LA APP
     st.markdown(
         """
         <style>
@@ -236,7 +237,9 @@ def main():
         guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
 
         with open(output_path, "rb") as pdf_file:
-            st.download_button(label="Descargar Evaluación (PDF)", data=pdf_file, file_name=f"{datos['area']}-{datos['nombre']}-{datos['uni']}.pdf", mime="application/pdf")
+            st.download_button(label="Descargar Evaluación (PDF)",
+                               data=pdf_file, file_name=f"{datos['area']}-{datos['nombre']}-{datos['uni']}.pdf", #MAJ ACA LE PONGO EL NOMBRE AL PDF DESCARGADO AREA - NOMBRE DEL EVALUADO - UNION.PDF
+                               mime="application/pdf")
 
 if __name__ == "__main__":
     main()
