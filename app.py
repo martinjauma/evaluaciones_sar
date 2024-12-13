@@ -11,6 +11,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import Image
 from reportlab.pdfgen import canvas
+#asdfasd
 
 # Función para formatear la fecha en español
 def formatear_fecha(fecha):
