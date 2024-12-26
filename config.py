@@ -52,7 +52,7 @@ DESCRIPCIONES_AREAS = {
         "Proactivo.",
     ],
     "Match Official": [
-        "Compromiso / Puntualidad.",
+        "Comprensión de los conceptos básicos",
         "Objetivo/s personales de la capacitación.",
         "Demostración de herramientas para la conducción del juego",
         "Retroalimentación  (feedback)",
