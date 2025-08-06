@@ -11,6 +11,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import Image
 from reportlab.pdfgen import canvas
+from deep_translator import GoogleTranslator
 
 # Función para formatear la fecha en español
 def formatear_fecha(fecha):
@@ -158,13 +159,13 @@ def main():
     tab1, tab2 = st.tabs(["Español", "English"])
 
     with tab1:
-    PARTICIPANTES_CSV_PATH = "SAR 2024 ACADEMIA HP/Participantes x Areas.csv" #MAJ CSV DE LOS PARTICIPANTES A EVALUAR
-    df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH) 
-    area = st.sidebar.selectbox("Área de Evaluación", list(DESCRIPCIONES_AREAS.keys()))
-    participantes_area = df_participantes[df_participantes["AREA"] == area]
-    evaluador = EVALUADORES_AREAS.get(area, "Evaluador no asignado")
-    st.sidebar.text_input("Evaluador", value=evaluador, disabled=True)
-    nombre = st.sidebar.selectbox("Nombre del Evaluado", participantes_area["NOMBRE"].unique())
+        PARTICIPANTES_CSV_PATH = "SAR 2024 ACADEMIA HP/Participantes x Areas.csv" #MAJ CSV DE LOS PARTICIPANTES A EVALUAR
+        df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH) 
+        area = st.sidebar.selectbox("Área de Evaluación", list(DESCRIPCIONES_AREAS.keys()))
+        participantes_area = df_participantes[df_participantes["AREA"] == area]
+        evaluador = EVALUADORES_AREAS.get(area, "Evaluador no asignado")
+        st.sidebar.text_input("Evaluador", value=evaluador, disabled=True)
+        nombre = st.sidebar.selectbox("Nombre del Evaluado", participantes_area["NOMBRE"].unique())
 
     if nombre:
         datos_participante = participantes_area[participantes_area["NOMBRE"] == nombre].iloc[0]
@@ -272,6 +273,18 @@ def main():
             "celular": celular,
         }
         output_path = "evaluacion_final.pdf"
+
+        # Traducción si estamos en la pestaña de español
+        if 'evaluaciones' in locals():
+            evaluaciones_en = []
+            for ev in evaluaciones:
+                translated_obs = GoogleTranslator(source='es', target='en').translate(ev['observaciones'])
+                evaluaciones_en.append({
+                    "descripcion": DESCRIPCIONES_AREAS_EN[area][DESCRIPCIONES_AREAS[area].index(ev["descripcion"])],
+                    "calificacion": ev["calificacion"],
+                    "observaciones": translated_obs
+                })
+
         if 'evaluaciones_en' in locals():
             generar_pdf_con_reportlab(datos, evaluaciones_en, conclusion, evaluador, output_path)
             guardar_evaluacion(datos, evaluaciones_en, conclusion, evaluador)

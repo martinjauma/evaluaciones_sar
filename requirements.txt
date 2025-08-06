@@ -4,3 +4,4 @@ pymongo
 reportlab
 babel
 dnspython
+deep-translator
