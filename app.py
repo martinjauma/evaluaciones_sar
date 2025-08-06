@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import date, datetime
 import pandas as pd
-from config import DESCRIPCIONES_AREAS, EVALUADORES_AREAS
+from config import DESCRIPCIONES_AREAS, EVALUADORES_AREAS, DESCRIPCIONES_AREAS_EN
 from pymongo import MongoClient
 import config_mongo  # Importamos la configuración de MongoDB
 from babel.dates import format_date
@@ -154,6 +154,10 @@ def main():
     # Mostrar el logo en la barra lateral
     st.sidebar.image(logo_path, width=200)  # Ajusta el ancho de la imagen manualmente
     st.title("Generador de Evaluaciones")
+
+    tab1, tab2 = st.tabs(["Español", "English"])
+
+    with tab1:
     PARTICIPANTES_CSV_PATH = "SAR 2024 ACADEMIA HP/Participantes x Areas.csv" #MAJ CSV DE LOS PARTICIPANTES A EVALUAR
     df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH) 
     area = st.sidebar.selectbox("Área de Evaluación", list(DESCRIPCIONES_AREAS.keys()))
@@ -168,40 +172,77 @@ def main():
     else:
         contacto, celular, union = "", "", ""
 
-    descripciones = DESCRIPCIONES_AREAS[area]
-    evaluaciones = []
-    suma_calificaciones = 0
+    with tab1:
+        descripciones = DESCRIPCIONES_AREAS[area]
+        evaluaciones = []
+        suma_calificaciones = 0
 
 
-    #MAJ CSS personalizado para aumentar el tamaño de las descripciones EN LA APP
-    st.markdown(
-        """
-        <style>
-        .descripcion-grande {
-            font-size: 30px; /* Cambia el tamaño según tu preferencia */
-            font-weight: bold;
-            color: #fff; /* Ajusta el color si es necesario */
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-    for descripcion in descripciones:
-        # Mostrar descripción con estilo personalizado
-        st.markdown(f'<p class="descripcion-grande">{descripcion}</p>', unsafe_allow_html=True)
-        # Cambiar input de número a texto (solo aceptando 0, 1, 2, 3, 4, 5)
-        calificacion = st.text_input(f"Puntaje 0 al 5", value="", key=f"cal_{descripcion}")
-        observaciones = st.text_area(f"Observaciones", key=f"obs_{descripcion}")
-        
-        # Solo aceptar valores de "0", "1", "2", "3", "4", "5"
-        if calificacion in ['0', '1', '2', '3', '4', '5']:
-            evaluaciones.append({"descripcion": descripcion, "calificacion": int(calificacion), "observaciones": observaciones})
-            suma_calificaciones += int(calificacion)
-        elif calificacion != "":  # Mostrar advertencia si el valor no es permitido
-            st.warning("Solo se permiten los valores 0, 1, 2, 3, 4, 5 para las calificaciones.")
+        #MAJ CSS personalizado para aumentar el tamaño de las descripciones EN LA APP
+        st.markdown(
+            """
+            <style>
+            .descripcion-grande {
+                font-size: 30px; /* Cambia el tamaño según tu preferencia */
+                font-weight: bold;
+                color: #fff; /* Ajusta el color si es necesario */
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+        for descripcion in descripciones:
+            # Mostrar descripción con estilo personalizado
+            st.markdown(f'<p class="descripcion-grande">{descripcion}</p>', unsafe_allow_html=True)
+            # Cambiar input de número a texto (solo aceptando 0, 1, 2, 3, 4, 5)
+            calificacion = st.text_input(f"Puntaje 0 al 5", value="", key=f"cal_{descripcion}")
+            observaciones = st.text_area(f"Observaciones", key=f"obs_{descripcion}")
+            
+            # Solo aceptar valores de "0", "1", "2", "3", "4", "5"
+            if calificacion in ['0', '1', '2', '3', '4', '5']:
+                evaluaciones.append({"descripcion": descripcion, "calificacion": int(calificacion), "observaciones": observaciones})
+                suma_calificaciones += int(calificacion)
+            elif calificacion != "":  # Mostrar advertencia si el valor no es permitido
+                st.warning("Solo se permiten los valores 0, 1, 2, 3, 4, 5 para las calificaciones.")
 
-        # Separar cada bloque con una línea
-        st.markdown("---")
+            # Separar cada bloque con una línea
+            st.markdown("---")
+
+    with tab2:
+        descripciones = DESCRIPCIONES_AREAS_EN[area]
+        evaluaciones_en = []
+        suma_calificaciones_en = 0
+
+
+        #MAJ CSS personalizado para aumentar el tamaño de las descripciones EN LA APP
+        st.markdown(
+            """
+            <style>
+            .descripcion-grande {
+                font-size: 30px; /* Cambia el tamaño según tu preferencia */
+                font-weight: bold;
+                color: #fff; /* Ajusta el color si es necesario */
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+        for descripcion in descripciones:
+            # Mostrar descripción con estilo personalizado
+            st.markdown(f'<p class="descripcion-grande">{descripcion}</p>', unsafe_allow_html=True)
+            # Cambiar input de número a texto (solo aceptando 0, 1, 2, 3, 4, 5)
+            calificacion = st.text_input(f"Score 0 to 5", value="", key=f"cal_en_{descripcion}")
+            observaciones = st.text_area(f"Observations", key=f"obs_en_{descripcion}")
+            
+            # Solo aceptar valores de "0", "1", "2", "3", "4", "5"
+            if calificacion in ['0', '1', '2', '3', '4', '5']:
+                evaluaciones_en.append({"descripcion": descripcion, "calificacion": int(calificacion), "observaciones": observaciones})
+                suma_calificaciones_en += int(calificacion)
+            elif calificacion != "":  # Mostrar advertencia si el valor no es permitido
+                st.warning("Only values 0, 1, 2, 3, 4, 5 are allowed for ratings.")
+
+            # Separar cada bloque con una línea
+            st.markdown("---")
 
     # Mostrar suma de calificaciones con colores condicionales
     if suma_calificaciones <= 29:
@@ -231,9 +272,12 @@ def main():
             "celular": celular,
         }
         output_path = "evaluacion_final.pdf"
-        generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path)
-
-        guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
+        if 'evaluaciones_en' in locals():
+            generar_pdf_con_reportlab(datos, evaluaciones_en, conclusion, evaluador, output_path)
+            guardar_evaluacion(datos, evaluaciones_en, conclusion, evaluador)
+        else:
+            generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path)
+            guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
 
         with open(output_path, "rb") as pdf_file:
             st.download_button(label="Descargar Evaluación (PDF)",
