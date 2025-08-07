@@ -302,7 +302,28 @@ def main():
     with tab2:
         st.header("Evaluation in English")
         descripciones_en = DESCRIPCIONES_AREAS_EN[area]
+
+        for i, descripcion in enumerate(descripciones_en):
+            # Cargar y traducir datos guardados si existen
+            calificacion_guardada = ""
+            observaciones_traducidas = ""
+            if evaluacion_guardada and 'evaluaciones' in evaluacion_guardada and i < len(evaluacion_guardada['evaluaciones']):
+                calificacion_guardada = evaluacion_guardada['evaluaciones'][i].get('calificacion', "")
+                observaciones_originales = evaluacion_guardada['evaluaciones'][i].get('observaciones', "")
+                if observaciones_originales:
+                    observaciones_traducidas = GoogleTranslator(source='es', target='en').translate(observaciones_originales)
+
+            st.markdown(f'<p class="descripcion-grande">{descripcion}</p>', unsafe_allow_html=True)
+            st.text_input(f"Score 0 to 5", value=str(calificacion_guardada), key=f"cal_en_{descripcion}", disabled=True)
+            st.text_area(f"Observations", value=observaciones_traducidas, key=f"obs_en_{descripcion}", disabled=True)
+            st.markdown("---")
+
+        conclusion_traducida = ""
+        if evaluacion_guardada and 'conclusion' in evaluacion_guardada and evaluacion_guardada['conclusion']:
+            conclusion_traducida = GoogleTranslator(source='es', target='en').translate(evaluacion_guardada['conclusion'])
         
+        st.text_area("Conclusion", value=conclusion_traducida, disabled=True)
+
         if st.button("Generate English Evaluation (PDF)"):
             datos = {
                 "fecha": date.today().strftime('%d/%m/%Y'),
