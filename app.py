@@ -11,16 +11,19 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import Image
 from reportlab.pdfgen import canvas
-from deep_translator import GoogleTranslator
+from google.cloud import translate_v3 as translate
 
 # Función para formatear la fecha en español
 def formatear_fecha(fecha):
     return format_date(fecha, format='MMMM yyyy', locale='es')
 
-# Conexión a MongoDB usando la configuración desde config_mongo.py
-client = MongoClient(config_mongo.MONGO_URI)
-db = client[config_mongo.DB_NAME]  # Usamos el nombre de la base de datos
-collection = db[config_mongo.COLLECTION_NAME]  # Usamos el nombre de la colección
+# Conexión a MongoDB usando la configuración desde st.secrets
+client = MongoClient(st.secrets["mongo_uri"])
+db = client[st.secrets["db_name"]]  # Usamos el nombre de la base de datos
+collection = db[st.secrets["collection_name"]]  # Usamos el nombre de la colección
+
+# Inicializar el cliente de Google Cloud Translation
+translator = translate.TranslationServiceClient()
 
 # Cargar la evaluación más reciente de un participante
 def cargar_evaluacion(nombre, area):
@@ -327,14 +330,27 @@ def main():
 
             evaluaciones_en = []
             for ev in evaluaciones:
-                translated_obs = GoogleTranslator(source='es', target='en').translate(ev['observaciones'])
+                # Traducir observaciones usando Google Cloud Translation API
+                response = translator.translate_text(
+                    contents=[ev['observaciones']],
+                    target_language_code="en",
+                    parent=f"projects/{st.secrets["gcp_project_id"]}"
+                )
+                translated_obs = response.translations[0].translated_text
+
                 evaluaciones_en.append({
                     "descripcion": DESCRIPCIONES_AREAS_EN[area][DESCRIPCIONES_AREAS[area].index(ev["descripcion"])],
                     "calificacion": ev["calificacion"],
                     "observaciones": translated_obs
                 })
             
-            translated_conclusion = GoogleTranslator(source='es', target='en').translate(conclusion)
+            # Traducir la conclusión usando Google Cloud Translation API
+            response = translator.translate_text(
+                contents=[conclusion],
+                target_language_code="en",
+                parent=f"projects/{st.secrets["gcp_project_id"]}"
+            )
+            translated_conclusion = response.translations[0].translated_text
 
             generar_pdf_con_reportlab(datos, evaluaciones_en, translated_conclusion, evaluador, output_path, language='en', header_pdf_path=header_pdf_path)
 
