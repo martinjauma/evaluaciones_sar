@@ -209,7 +209,7 @@ def main():
 
     header_options = {
         "SAR 2024": "SAR 2024 ACADEMIA HP/PlantillaEvaluacionesSAR2024.pdf",
-        "SAR 2023": "SAR-2023.pdf"
+        "SAR 2023": "SAR 2024 ACADEMIA HP/SAR-2023.pdf"
     }
     selected_header = st.sidebar.selectbox("Seleccionar Encabezado", list(header_options.keys()))
     header_pdf_path = header_options[selected_header]
