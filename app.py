@@ -77,32 +77,12 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
 
     elements = []
 
-    def on_first_page(canvas, doc):
-        if header_pdf_path:
-            from PyPDF2 import PdfReader
-            from reportlab.pdfgen.canvas import Canvas
-            from reportlab.lib.utils import ImageReader
-            from io import BytesIO
-
-            with open(header_pdf_path, "rb") as f:
-                reader = PdfReader(f)
-                page = reader.pages[0]
-                
-                # Create a new canvas to draw the PDF page onto
-                packet = BytesIO()
-                canv_temp = Canvas(packet, pagesize=A4)
-                
-                # This is a workaround to get the PDF page as an image
-                # It requires the `PyMuPDF` library to be installed
-                import fitz # PyMuPDF
-                doc_fitz = fitz.open(header_pdf_path)
-                page_fitz = doc_fitz.load_page(0)
-                pix = page_fitz.get_pixmap()
-                img_data = pix.tobytes("ppm")
-                image = ImageReader(BytesIO(img_data))
-                canvas.drawImage(image, 0, 0, width=A4[0], height=A4[1])
-
-        add_page_number(canvas, doc)
+    if header_pdf_path:
+        try:
+            img = Image(header_pdf_path, width=A4[0] - 80, height=(A4[0] - 80) * 0.2)  # Ajusta proporción
+            elements.append(img)
+        except IOError:
+            elements.append(Paragraph("<b>Encabezado no disponible</b>", styles["Normal"]))
 
     # Título EVALUACIÓN con la fecha en la misma fila
     elements.append(Spacer(1, 5))
@@ -208,8 +188,8 @@ def main():
     st.title("Generador de Evaluaciones")
 
     header_options = {
-        "SAR 2024": "SAR 2024 ACADEMIA HP/PlantillaEvaluacionesSAR2024.pdf",
-        "SAR 2023": "SAR 2024 ACADEMIA HP/SAR-2023.pdf"
+        "SAR 2024": "images/header_2024.png",
+        "SAR 2023": "images/header_2023.png"
     }
     selected_header = st.sidebar.selectbox("Seleccionar Encabezado", list(header_options.keys()))
     header_pdf_path = header_options[selected_header]
