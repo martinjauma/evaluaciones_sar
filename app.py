@@ -87,12 +87,10 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     # Título EVALUACIÓN con la fecha en la misma fila
     elements.append(Spacer(1, 5))
 
-    # Obtener la fecha desde los datos y formatearla en español
-    fecha_original = datos['fecha']  # Asume que 'fecha' está en formato "DD/MM/YYYY"
-    fecha_objeto = datetime.strptime(fecha_original, "%d/%m/%Y")
+    # Obtener la fecha desde los datos y usarla como texto
+    fecha_original = datos['fecha']
     
     if language == 'en':
-        fecha_formateada = fecha_objeto.strftime("%B, %Y")
         title_text = "EVALUATION"
         area_text = "Area"
         nombre_text = "Name"
@@ -103,7 +101,6 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
         total_text = "Total"
         conclusion_text = "Conclusion"
     else:
-        fecha_formateada = format_date(fecha_objeto, format='MMMM yyyy', locale='es').capitalize()
         title_text = "EVALUACIÓN"
         area_text = "Área"
         nombre_text = "Nombre"
@@ -118,7 +115,7 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     # Crear una tabla para el encabezado con EVALUACIÓN y Fecha
     header_table_data = [
         [Paragraph(f"<b>{title_text}</b>", styles["CustomTitle"]),
-         Paragraph(f"{fecha_formateada}", ParagraphStyle(name="DateStyle", fontSize=11, alignment=2))]
+         Paragraph(f"{fecha_original}", ParagraphStyle(name="DateStyle", fontSize=11, alignment=2))]
     ]
 
     header_table = Table(header_table_data, colWidths=[300, 200])  # Ajusta el ancho de las columnas
@@ -209,7 +206,18 @@ def main():
             datos_participante = participantes_area[participantes_area["NOMBRE"] == nombre].iloc[0]
             contacto, celular, union, fecha_evaluacion = datos_participante["EMAIL"], datos_participante["CONTACTO"], datos_participante["UNION/FEDERACION"], datos_participante["FECHA"]
             st.sidebar.write(f"**Fecha de Evaluación:** {fecha_evaluacion}")
-            evaluacion_guardada = cargar_evaluacion(nombre, area)
+
+        # Mostrar suma de calificaciones con colores condicionales
+        if suma_calificaciones <= 29:
+            color = "red"
+        elif 30 <= suma_calificaciones <= 40:
+            color = "yellow"
+        else:
+            color = "green"
+        
+        st.sidebar.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones} puntos</h1>", unsafe_allow_html=True)
+
+        evaluacion_guardada = cargar_evaluacion(nombre, area)
         else:
             contacto, celular, union, fecha_evaluacion = "", "", "", ""
             evaluacion_guardada = None
