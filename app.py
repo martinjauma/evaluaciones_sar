@@ -167,6 +167,7 @@ def main():
         st.sidebar.text_input("Evaluador", value=evaluador, disabled=True)
         nombre = st.sidebar.selectbox("Nombre del Evaluado", participantes_area["NOMBRE"].unique())
 
+
     if nombre:
         datos_participante = participantes_area[participantes_area["NOMBRE"] == nombre].iloc[0]
         contacto, celular, union = datos_participante["EMAIL"], datos_participante["CONTACTO"], datos_participante["UNION/FEDERACION"]
@@ -208,74 +209,41 @@ def main():
 
             # Separar cada bloque con una línea
             st.markdown("---")
+        
+        conclusion = st.text_area("Conclusión de la Evaluación")
+
+        if st.button("Generar Evaluación (PDF) y Guardar"):
+            datos = {
+                "fecha": date.today().strftime('%d/%m/%Y'),
+                "area": area,
+                "nombre": nombre,
+                "uni": union,
+                "email": contacto,
+                "celular": celular,
+            }
+            output_path = "evaluacion_final.pdf"
+            generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path)
+            guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
+
+            with open(output_path, "rb") as pdf_file:
+                st.download_button(label="Descargar Evaluación (PDF)",
+                                   data=pdf_file, file_name=f"{datos['area']}-{datos['nombre']}-{datos['uni']}.pdf",
+                                   mime="application/pdf")
 
     with tab2:
-        descripciones = DESCRIPCIONES_AREAS_EN[area]
-        evaluaciones_en = []
-        suma_calificaciones_en = 0
-
-
-        #MAJ CSS personalizado para aumentar el tamaño de las descripciones EN LA APP
-        st.markdown(
-            """
-            <style>
-            .descripcion-grande {
-                font-size: 30px; /* Cambia el tamaño según tu preferencia */
-                font-weight: bold;
-                color: #fff; /* Ajusta el color si es necesario */
-            }
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
-        for descripcion in descripciones:
-            # Mostrar descripción con estilo personalizado
-            st.markdown(f'<p class="descripcion-grande">{descripcion}</p>', unsafe_allow_html=True)
-            # Cambiar input de número a texto (solo aceptando 0, 1, 2, 3, 4, 5)
-            calificacion = st.text_input(f"Score 0 to 5", value="", key=f"cal_en_{descripcion}")
-            observaciones = st.text_area(f"Observations", key=f"obs_en_{descripcion}")
-            
-            # Solo aceptar valores de "0", "1", "2", "3", "4", "5"
-            if calificacion in ['0', '1', '2', '3', '4', '5']:
-                evaluaciones_en.append({"descripcion": descripcion, "calificacion": int(calificacion), "observaciones": observaciones})
-                suma_calificaciones_en += int(calificacion)
-            elif calificacion != "":  # Mostrar advertencia si el valor no es permitido
-                st.warning("Only values 0, 1, 2, 3, 4, 5 are allowed for ratings.")
-
-            # Separar cada bloque con una línea
-            st.markdown("---")
-
-    # Mostrar suma de calificaciones con colores condicionales
-    if suma_calificaciones <= 29:
-        color = "red"
-    elif 30 <= suma_calificaciones <= 40:
-        color = "yellow"
-    else:
-        color = "green"
+        descripciones_en = DESCRIPCIONES_AREAS_EN[area]
         
-    # Información del evaluado en el sidebar
-    st.sidebar.write(f"**Correo Electrónico:** {contacto}")
-    st.sidebar.write(f"**Número de Celular:** {celular}")
-    st.sidebar.write(f"**Unión/Federación:** {union}")
+        if st.button("Generar Evaluación en Inglés (PDF)"):
+            datos = {
+                "fecha": date.today().strftime('%d/%m/%Y'),
+                "area": area,
+                "nombre": nombre,
+                "uni": union,
+                "email": contacto,
+                "celular": celular,
+            }
+            output_path = "evaluacion_final_en.pdf"
 
-    # Mostrar la suma de calificaciones con el KPI en el sidebar
-    st.sidebar.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones} puntos</h1>", unsafe_allow_html=True)
-
-    conclusion = st.text_area("Conclusión de la Evaluación")
-
-    if st.button("Generar Evaluación (PDF)"):
-        datos = {
-            "fecha": date.today().strftime('%d/%m/%Y'),
-            "area": area,
-            "nombre": nombre,
-            "uni": union,
-            "email": contacto,
-            "celular": celular,
-        }
-        output_path = "evaluacion_final.pdf"
-
-        # Traducción si estamos en la pestaña de español
-        if 'evaluaciones' in locals():
             evaluaciones_en = []
             for ev in evaluaciones:
                 translated_obs = GoogleTranslator(source='es', target='en').translate(ev['observaciones'])
@@ -284,18 +252,15 @@ def main():
                     "calificacion": ev["calificacion"],
                     "observaciones": translated_obs
                 })
+            
+            translated_conclusion = GoogleTranslator(source='es', target='en').translate(conclusion)
 
-        if 'evaluaciones_en' in locals():
-            generar_pdf_con_reportlab(datos, evaluaciones_en, conclusion, evaluador, output_path)
-            guardar_evaluacion(datos, evaluaciones_en, conclusion, evaluador)
-        else:
-            generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path)
-            guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
+            generar_pdf_con_reportlab(datos, evaluaciones_en, translated_conclusion, evaluador, output_path)
 
-        with open(output_path, "rb") as pdf_file:
-            st.download_button(label="Descargar Evaluación (PDF)",
-                               data=pdf_file, file_name=f"{datos['area']}-{datos['nombre']}-{datos['uni']}.pdf", #MAJ ACA LE PONGO EL NOMBRE AL PDF DESCARGADO AREA - NOMBRE DEL EVALUADO - UNION.PDF
-                               mime="application/pdf")
+            with open(output_path, "rb") as pdf_file:
+                st.download_button(label="Descargar Evaluación en Inglés (PDF)",
+                                   data=pdf_file, file_name=f"{datos['area']}-{datos['nombre']}-{datos['uni']}_EN.pdf",
+                                   mime="application/pdf")
 
 if __name__ == "__main__":
     main()
