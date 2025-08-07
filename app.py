@@ -51,7 +51,7 @@ def add_page_number(canvas, doc):
     canvas.restoreState()
 
 # Generar PDF con ReportLab
-def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path, language='es'):
+def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path, language='es', header_pdf_path=None):
     doc = SimpleDocTemplate(output_path, pagesize=A4, leftMargin=40, rightMargin=40, topMargin=40, bottomMargin=40)
     styles = getSampleStyleSheet()
 
@@ -63,15 +63,33 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     styles.add(ParagraphStyle(name="ClassificacionCell", fontSize=12, alignment=1, leading=12))  # Tamaño de fuente para clasificación (centrado)
 
     elements = []
-    
-    #MAJ CAMBIA AÑO A AÑO EL ENCABEZADO del pdf SE LO PIDO A Darda!
-    # Encabezado con imagen
-    header_image = "images/encSARAca.jpeg"
-    try:
-        img = Image(header_image, width=A4[0] - 80, height=(A4[0] - 80) * 0.2)  # Ajusta proporción
-        elements.append(img)
-    except IOError:
-        elements.append(Paragraph("<b>Encabezado no disponible</b>", styles["Normal"]))
+
+    def on_first_page(canvas, doc):
+        if header_pdf_path:
+            from PyPDF2 import PdfReader
+            from reportlab.pdfgen.canvas import Canvas
+            from reportlab.lib.utils import ImageReader
+            from io import BytesIO
+
+            with open(header_pdf_path, "rb") as f:
+                reader = PdfReader(f)
+                page = reader.pages[0]
+                
+                # Create a new canvas to draw the PDF page onto
+                packet = BytesIO()
+                canv_temp = Canvas(packet, pagesize=A4)
+                
+                # This is a workaround to get the PDF page as an image
+                # It requires the `PyMuPDF` library to be installed
+                import fitz # PyMuPDF
+                doc_fitz = fitz.open(header_pdf_path)
+                page_fitz = doc_fitz.load_page(0)
+                pix = page_fitz.get_pixmap()
+                img_data = pix.tobytes("ppm")
+                image = ImageReader(BytesIO(img_data))
+                canvas.drawImage(image, 0, 0, width=A4[0], height=A4[1])
+
+        add_page_number(canvas, doc)
 
     # Título EVALUACIÓN con la fecha en la misma fila
     elements.append(Spacer(1, 5))
@@ -176,6 +194,13 @@ def main():
     st.sidebar.image(logo_path, width=200)  # Ajusta el ancho de la imagen manualmente
     st.title("Generador de Evaluaciones")
 
+    header_options = {
+        "SAR 2024": "SAR 2024 ACADEMIA HP/PlantillaEvaluacionesSAR2024.pdf",
+        "SAR 2023": "SAR-2023.pdf"
+    }
+    selected_header = st.sidebar.selectbox("Seleccionar Encabezado", list(header_options.keys()))
+    header_pdf_path = header_options[selected_header]
+
     tab1, tab2 = st.tabs(["Español", "English"])
 
     with tab1:
@@ -243,7 +268,7 @@ def main():
                 "celular": celular,
             }
             output_path = "evaluacion_final.pdf"
-            generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path, language='es')
+            generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path, language='es', header_pdf_path=header_pdf_path)
             guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
 
             with open(output_path, "rb") as pdf_file:
@@ -277,7 +302,7 @@ def main():
             
             translated_conclusion = GoogleTranslator(source='es', target='en').translate(conclusion)
 
-            generar_pdf_con_reportlab(datos, evaluaciones_en, translated_conclusion, evaluador, output_path, language='en')
+            generar_pdf_con_reportlab(datos, evaluaciones_en, translated_conclusion, evaluador, output_path, language='en', header_pdf_path=header_pdf_path)
 
             with open(output_path, "rb") as pdf_file:
                 st.download_button(label="Download English Evaluation (PDF)",
