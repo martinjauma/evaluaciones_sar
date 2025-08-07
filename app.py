@@ -22,6 +22,19 @@ client = MongoClient(config_mongo.MONGO_URI)
 db = client[config_mongo.DB_NAME]  # Usamos el nombre de la base de datos
 collection = db[config_mongo.COLLECTION_NAME]  # Usamos el nombre de la colección
 
+# Cargar la evaluación más reciente de un participante
+def cargar_evaluacion(nombre, area):
+    evaluacion_guardada = collection.find_one(
+        {"nombre": nombre, "area": area},
+        sort=[("fecha", -1)]  # Ordenar por fecha descendente para obtener la más reciente
+    )
+    if evaluacion_guardada:
+        print(f"Evaluación encontrada para {nombre} en el área {area}.")
+        return evaluacion_guardada
+    else:
+        print(f"No se encontró evaluación para {nombre} en el área {area}.")
+        return None
+
 # Guardar evaluación en MongoDB
 def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador):
     # Asegurarse de que todas las descripciones estén en evaluaciones, si no tienen calificación asignada se les da un 0
@@ -216,8 +229,10 @@ def main():
     if nombre:
         datos_participante = participantes_area[participantes_area["NOMBRE"] == nombre].iloc[0]
         contacto, celular, union = datos_participante["EMAIL"], datos_participante["CONTACTO"], datos_participante["UNION/FEDERACION"]
+        evaluacion_guardada = cargar_evaluacion(nombre, area)
     else:
         contacto, celular, union = "", "", ""
+        evaluacion_guardada = None
 
     with tab1:
         st.header("Evaluación en Español")
@@ -239,12 +254,19 @@ def main():
             """,
             unsafe_allow_html=True
         )
-        for descripcion in descripciones:
+        for i, descripcion in enumerate(descripciones):
+            # Cargar datos guardados si existen
+            calificacion_guardada = ""
+            observaciones_guardadas = ""
+            if evaluacion_guardada and 'evaluaciones' in evaluacion_guardada and i < len(evaluacion_guardada['evaluaciones']):
+                calificacion_guardada = evaluacion_guardada['evaluaciones'][i].get('calificacion', "")
+                observaciones_guardadas = evaluacion_guardada['evaluaciones'][i].get('observaciones', "")
+
             # Mostrar descripción con estilo personalizado
             st.markdown(f'<p class="descripcion-grande">{descripcion}</p>', unsafe_allow_html=True)
             # Cambiar input de número a texto (solo aceptando 0, 1, 2, 3, 4, 5)
-            calificacion = st.text_input(f"Puntaje 0 al 5", value="", key=f"cal_{descripcion}")
-            observaciones = st.text_area(f"Observaciones", key=f"obs_{descripcion}")
+            calificacion = st.text_input(f"Puntaje 0 al 5", value=str(calificacion_guardada), key=f"cal_{descripcion}")
+            observaciones = st.text_area(f"Observaciones", value=observaciones_guardadas, key=f"obs_{descripcion}")
             
             # Solo aceptar valores de "0", "1", "2", "3", "4", "5"
             if calificacion in ['0', '1', '2', '3', '4', '5']:
@@ -256,7 +278,8 @@ def main():
             # Separar cada bloque con una línea
             st.markdown("---")
         
-        conclusion = st.text_area("Conclusión de la Evaluación")
+        conclusion_guardada = evaluacion_guardada['conclusion'] if evaluacion_guardada else ""
+        conclusion = st.text_area("Conclusión de la Evaluación", value=conclusion_guardada)
 
         if st.button("Generar Evaluación (PDF) y Guardar"):
             datos = {
