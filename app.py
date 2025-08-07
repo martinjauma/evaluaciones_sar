@@ -205,14 +205,14 @@ def main():
         st.sidebar.text_input("Evaluador", value=evaluador, disabled=True)
         nombre = st.sidebar.selectbox("Nombre del Evaluado", participantes_area["NOMBRE"].unique())
 
-
-    if nombre:
-        datos_participante = participantes_area[participantes_area["NOMBRE"] == nombre].iloc[0]
-        contacto, celular, union = datos_participante["EMAIL"], datos_participante["CONTACTO"], datos_participante["UNION/FEDERACION"]
-        evaluacion_guardada = cargar_evaluacion(nombre, area)
-    else:
-        contacto, celular, union = "", "", ""
-        evaluacion_guardada = None
+        if nombre:
+            datos_participante = participantes_area[participantes_area["NOMBRE"] == nombre].iloc[0]
+            contacto, celular, union, fecha_evaluacion = datos_participante["EMAIL"], datos_participante["CONTACTO"], datos_participante["UNION/FEDERACION"], datos_participante["FECHA"]
+            st.sidebar.write(f"**Fecha de Evaluación:** {fecha_evaluacion}")
+            evaluacion_guardada = cargar_evaluacion(nombre, area)
+        else:
+            contacto, celular, union, fecha_evaluacion = "", "", "", ""
+            evaluacion_guardada = None
 
     with tab1:
         st.header("Evaluación en Español")
@@ -263,7 +263,7 @@ def main():
 
         if st.button("Generar Evaluación (PDF) y Guardar"):
             datos = {
-                "fecha": date.today().strftime('%d/%m/%Y'),
+                "fecha": fecha_evaluacion,
                 "area": area,
                 "nombre": nombre,
                 "uni": union,
@@ -306,7 +306,7 @@ def main():
 
         if st.button("Generate English Evaluation (PDF)"):
             datos = {
-                "fecha": date.today().strftime('%d/%m/%Y'),
+                "fecha": fecha_evaluacion,
                 "area": area,
                 "nombre": nombre,
                 "uni": union,
