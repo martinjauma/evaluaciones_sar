@@ -1,45 +1,46 @@
-,UNION/FEDERACION,NOMBRE,EMAIL,CONTACTO,AREA
-1,URU,Diego Magno,diego@solcre.com,+598 93 893 165,Coaching
-2,URP,Eduardo Panseri,gusipanseri@gmail.com,54 9 379 479 2084,Coaching
-3,FCR,Juan Giraldo,juancho9c@gmail.com,573217473934,Coaching
-4,UAR,Bascary Pablo ,bascarypablodiego@gmail.com,,Coaching
-5,UAR,Carossio Sergio ,sergio.carossio@uar.com.ar,,Coaching
-6,UAR,Matias Narvaez ,narv26@hotmail.com,,Coaching
-7,CBRu,Lucas Abud,lucas.abud@brasilrugby.com,5519992322203,Coaching
-8,Invitado,Eugenio Astesiano,eugenio.astesiano@gmail.com,595972945455,Coaching
-9,URU,Joaquin Senattore,joaquinsenattore@gmail.com,+598 99 039 512,Preparación Física
-10,URP,Leonardo Eraso,leo.eraso@urp.org.py,595 971 863504,Preparación Física
-11,FCR,Diego Posada,diego.001@hotmail.com,573217473934,Preparación Física
-12,UAR,Sanchez Gustavo ,gsanpf@gmail.com,,Preparación Física
-13,CBRu,Eduardo Zanrosso,eduardo.zanrosso@brasilrugby.com.br,+55 54 9232-1218,Preparación Física
-14,Invitado,Juan Francisco Calandra Vera,totticalandra01@gmail.com,59898100912,Fisio
-15,URU,Florencia Santin,florsantin@hotmail.com,+598 98 124 285,Nutrición
-16,URP,Daiana Gonzalez,nutridaigonzalez@gmail.com,54 9 379 476 9915,Nutrición
-17,FCR,Alejandra Cano,alejata15@gmail.com,573207937033,Nutrición
-18,CBRu,Mariana Aguiar,mariana.guerra@brasilrugby.com.br,+55 11 99687-7649,Nutrición
-19,UAR,Foniciello Antonella,nutrifoniciello@gmail.com,5493815880679,Nutrición
-20,URP,Carlos Aaron Meza Ojeda,caaamo@gmail.com,595 971 779339,Médico
-21,Chile,Diego Garcia de la Pastora,dgarciadelapastora@chilerugby.org,56954020383,Médico
-22,UAR,Alzugaray Dante ,dantealzugaray6@gmail.com,,Médico
-23,CBRu,Leandro Miranda,Leandro.m.o.contato@gmail.com,+55 11 96901-7533,Médico
-24,URU,Andres Lo Bianco,andreslobianco@gmail.com,+54 9 11 6253 3492,Video & Análisis
-25,Chile,Juan Salazar,jsalazar@chilerugby.org,56971992354,Video & Análisis
-26,UAR,Virasoro Jose,virasorojose1@gmail.com,+54 9 3517 30-3632,Video & Análisis
-27,URP,Dan Riquelme,danis_riquelme@hotmail.com,+595 981 213632,Video & Análisis
-27,URU,Ignacio Inda,indacameignacio@gmail.com,+598 98 200 906,Team Manager
-28,URP,Oscar Mendez,omendez@urp.org.py,595 971 207507,Team Manager
-29,FCR,Manuela Caicedo,managertucanes@colombia.rugby,573166295498,Team Manager
-30,UAR,Ferreyra Orlando ,orlandoferreyra10@hotmail.com,,Team Manager
-31,CBRu,Felipe Braun,felipe.braun@brasilrugby.com.br,+55 11 95599-1819,Team Manager
-32,URU,Santiago Antinori,Santian_a@hotmail.com,+54 9 3857 67 5816 ,Fisio
-33,URP,Rocio Bareiro,bareiroro14@gmail.com,595 994 489373,Fisio
-34,Chile,Joaquin Ibañez,jibanez@chilerugby.org,56998880284,Fisio
-35,UAR,Martearena Maximo,maximomartearena@gmail.com,,Fisio
-36,CBRu,Bruno Godoy,bruno.godoy@brasilrugby.com.br,+55 12 99185-3794,Fisio
-37,URU,Rodrigo Masciardi,rodrigo.portillo.masciadri@gmail.com,+598 98 405 527,Match Official
-38,FCR,Luis Laino,referato@colombia.rugby,573012679065,Match Official
-39,UAR,UAR,,,Match Official
-40,URP,Axel Cortazar,axel.cortazar40@gmail.com,595982482985,Match Official
-41,FCR,Andres Santos,competencias@colombia.rugby,573215383753,Logística & Utilería
-42,URU,Santiago Suarez,,,Logística & Utilería
-43,FER,Juan Gonzalez,juan.gonzalez.marruecos@gmail.com,+34637777075,Coaching
+,UNION/FEDERACION,NOMBRE,EMAIL,CONTACTO,AREA,FECHA
+1,URU,Diego Magno,diego@solcre.com,+598 93 893 165,Coaching,"Noviembre, 2024"
+2,URP,Eduardo Panseri,gusipanseri@gmail.com,54 9 379 479 2084,Coaching,"Noviembre, 2024"
+3,FCR,Juan Giraldo,juancho9c@gmail.com,573217473934,Coaching,"Noviembre, 2024"
+4,UAR,Bascary Pablo ,bascarypablodiego@gmail.com,,Coaching,"Noviembre, 2024"
+5,UAR,Carossio Sergio ,sergio.carossio@uar.com.ar,,Coaching,"Noviembre, 2024"
+6,UAR,Matias Narvaez ,narv26@hotmail.com,,Coaching,"Noviembre, 2024"
+7,CBRu,Lucas Abud,lucas.abud@brasilrugby.com,5519992322203,Coaching,"Noviembre, 2024"
+8,Invitado,Eugenio Astesiano,eugenio.astesiano@gmail.com,595972945455,Coaching,"Noviembre, 2024"
+9,URU,Joaquin Senattore,joaquinsenattore@gmail.com,+598 99 039 512,Preparación Física,"Noviembre, 2024"
+10,URP,Leonardo Eraso,leo.eraso@urp.org.py,595 971 863504,Preparación Física,"Noviembre, 2024"
+11,FCR,Diego Posada,diego.001@hotmail.com,573217473934,Preparación Física,"Noviembre, 2024"
+12,UAR,Sanchez Gustavo ,gsanpf@gmail.com,,Preparación Física,"Noviembre, 2024"
+13,CBRu,Eduardo Zanrosso,eduardo.zanrosso@brasilrugby.com.br,+55 54 9232-1218,Preparación Física,"Noviembre, 2024"
+14,Invitado,Juan Francisco Calandra Vera,totticalandra01@gmail.com,59898100912,Fisio,"Noviembre, 2024"
+15,URU,Florencia Santin,florsantin@hotmail.com,+598 98 124 285,Nutrición,"Noviembre, 2024"
+16,URP,Daiana Gonzalez,nutridaigonzalez@gmail.com,54 9 379 476 9915,Nutrición,"Noviembre, 2024"
+17,FCR,Alejandra Cano,alejata15@gmail.com,573207937033,Nutrición,"Noviembre, 2024"
+18,CBRu,Mariana Aguiar,mariana.guerra@brasilrugby.com.br,+55 11 99687-7649,Nutrición,"Noviembre, 2024"
+19,UAR,Foniciello Antonella,nutrifoniciello@gmail.com,5493815880679,Nutrición,"Noviembre, 2024"
+20,URP,Carlos Aaron Meza Ojeda,caaamo@gmail.com,595 971 779339,Médico,"Noviembre, 2024"
+21,Chile,Diego Garcia de la Pastora,dgarciadelapastora@chilerugby.org,56954020383,Médico,"Noviembre, 2024"
+22,UAR,Alzugaray Dante ,dantealzugaray6@gmail.com,,Médico,"Noviembre, 2024"
+23,CBRu,Leandro Miranda,Leandro.m.o.contato@gmail.com,+55 11 96901-7533,Médico,"Noviembre, 2024"
+24,URU,Andres Lo Bianco,andreslobianco@gmail.com,+54 9 11 6253 3492,Video & Análisis,"Noviembre, 2024"
+25,Chile,Juan Salazar,jsalazar@chilerugby.org,56971992354,Video & Análisis,"Noviembre, 2024"
+26,UAR,Virasoro Jose,virasorojose1@gmail.com,+54 9 3517 30-3632,Video & Análisis,"Noviembre, 2024"
+27,URP,Dan Riquelme,danis_riquelme@hotmail.com,+595 981 213632,Video & Análisis,"Noviembre, 2024"
+27,URU,Ignacio Inda,indacameignacio@gmail.com,+598 98 200 906,Team Manager,"Noviembre, 2024"
+28,URP,Oscar Mendez,omendez@urp.org.py,595 971 207507,Team Manager,"Noviembre, 2024"
+29,FCR,Manuela Caicedo,managertucanes@colombia.rugby,573166295498,Team Manager,"Noviembre, 2024"
+30,UAR,Ferreyra Orlando ,orlandoferreyra10@hotmail.com,,Team Manager,"Noviembre, 2024"
+31,CBRu,Felipe Braun,felipe.braun@brasilrugby.com.br,+55 11 95599-1819,Team Manager,"Noviembre, 2024"
+32,URU,Santiago Antinori,Santian_a@hotmail.com,+54 9 3857 67 5816,Fisio,"Noviembre, 2024"
+33,URP,Rocio Bareiro,bareiroro14@gmail.com,595 994 489373,Fisio,"Noviembre, 2024"
+34,Chile,Joaquin Ibañez,jibanez@chilerugby.org,56998880284,Fisio,"Noviembre, 2024"
+35,UAR,Martearena Maximo,maximomartearena@gmail.com,,Fisio,"Noviembre, 2024"
+36,CBRu,Bruno Godoy,bruno.godoy@brasilrugby.com.br,+55 12 99185-3794,Fisio,"Noviembre, 2024"
+37,URU,Rodrigo Masciardi,rodrigo.portillo.masciadri@gmail.com,+598 98 405 527,Match Official,"Noviembre, 2024"
+38,FCR,Luis Laino,referato@colombia.rugby,573012679065,Match Official,"Noviembre, 2024"
+39,UAR,UAR,,,Match Official,"Noviembre, 2024"
+40,URP,Axel Cortazar,axel.cortazar40@gmail.com,595982482985,Match Official,"Noviembre, 2024"
+41,FCR,Andres Santos,competencias@colombia.rugby,573215383753,Logística & Utilería,"Noviembre, 2024"
+42,URU,Santiago Suarez,,,Logística & Utilería,"Noviembre, 2024"
+43,FER,Juan Gonzalez,juan.gonzalez.marruecos@gmail.com,34637777075,Coaching,"Noviembre, 2024"
+44,FCR,Lissete Carolina Martinez,capacitaciones@colombia.rugby,57 310 4338416,Coaching,"Diciembre, 2023"
