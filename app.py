@@ -206,21 +206,13 @@ def main():
             datos_participante = participantes_area[participantes_area["NOMBRE"] == nombre].iloc[0]
             contacto, celular, union, fecha_evaluacion = datos_participante["EMAIL"], datos_participante["CONTACTO"], datos_participante["UNION/FEDERACION"], datos_participante["FECHA"]
             st.sidebar.write(f"**Fecha de Evaluación:** {fecha_evaluacion}")
-
-        # Mostrar suma de calificaciones con colores condicionales
-        if suma_calificaciones <= 29:
-            color = "red"
-        elif 30 <= suma_calificaciones <= 40:
-            color = "yellow"
-        else:
-            color = "green"
-        
-        st.sidebar.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones} puntos</h1>", unsafe_allow_html=True)
-
-        evaluacion_guardada = cargar_evaluacion(nombre, area)
+            evaluacion_guardada = cargar_evaluacion(nombre, area)
         else:
             contacto, celular, union, fecha_evaluacion = "", "", "", ""
             evaluacion_guardada = None
+
+        # Este bloque se movió aquí para estar fuera del if/else de la carga de datos
+        suma_calificaciones = 0
 
     with tab1:
         st.header("Evaluación en Español")
@@ -268,6 +260,16 @@ def main():
         
         conclusion_guardada = evaluacion_guardada['conclusion'] if evaluacion_guardada else ""
         conclusion = st.text_area("Conclusión de la Evaluación", value=conclusion_guardada)
+
+        # Mostrar suma de calificaciones con colores condicionales
+        if suma_calificaciones <= 29:
+            color = "red"
+        elif 30 <= suma_calificaciones <= 40:
+            color = "yellow"
+        else:
+            color = "green"
+        
+        st.sidebar.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones} puntos</h1>", unsafe_allow_html=True)
 
         if st.button("Generar Evaluación (PDF) y Guardar"):
             datos = {
