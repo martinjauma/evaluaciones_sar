@@ -3,7 +3,6 @@ from datetime import date, datetime
 import pandas as pd
 from config import DESCRIPCIONES_AREAS, EVALUADORES_AREAS, DESCRIPCIONES_AREAS_EN
 from pymongo import MongoClient
-import config_mongo  # Importamos la configuración de MongoDB
 from babel.dates import format_date
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.pagesizes import A4
