@@ -1,0 +1,22 @@
+# Ignorar la carpeta .streamlit/secrets (si se usa para secretos)
+.streamlit/
+
+# Ignorar el archivo secrets.toml
+secrets.toml
+
+# Ignorar la carpeta de entorno virtual
+myenv/
+
+# Ignorar archivos de caché de Python
+__pycache__/
+*.pyc
+
+# Ignorar archivos específicos de macOS
+.DS_Store
+
+# Ignorar archivos de backup
+*.bak
+*.tmp
+
+# Ignorar archivos generados por la aplicación
+evaluacion_final.pdf
