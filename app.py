@@ -11,7 +11,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import Image
 from reportlab.pdfgen import canvas
-from google.cloud import translate_v3 as translate
+from deep_translator import GoogleTranslator
 
 # Función para formatear la fecha en español
 def formatear_fecha(fecha):
@@ -21,11 +21,6 @@ def formatear_fecha(fecha):
 client = MongoClient(st.secrets["mongo_uri"])
 db = client[st.secrets["db_name"]]  # Usamos el nombre de la base de datos
 collection = db[st.secrets["collection_name"]]  # Usamos el nombre de la colección
-
-# Inicializar el cliente de Google Cloud Translation
-translator = translate.TranslationServiceClient()
-
-# Cargar la evaluación más reciente de un participante
 def cargar_evaluacion(nombre, area):
     evaluacion_guardada = collection.find_one(
         {"nombre": nombre, "area": area},
@@ -307,15 +302,15 @@ def main():
                     observaciones_traducidas = GoogleTranslator(source='es', target='en').translate(observaciones_originales)
 
             st.markdown(f'<p class="descripcion-grande">{descripcion}</p>', unsafe_allow_html=True)
-            st.text_input(f"Score 0 to 5", value=str(calificacion_guardada), key=f"cal_en_{descripcion}", disabled=True)
-            st.text_area(f"Observations", value=observaciones_traducidas, key=f"obs_en_{descripcion}", disabled=True)
+            st.text_input(f"Score 0 to 5", value=str(calificacion_guardada), key=f"cal_en_{descripcion}")
+            st.text_area(f"Observations", value=observaciones_traducidas, key=f"obs_en_{descripcion}")
             st.markdown("---")
 
         conclusion_traducida = ""
         if evaluacion_guardada and 'conclusion' in evaluacion_guardada and evaluacion_guardada['conclusion']:
             conclusion_traducida = GoogleTranslator(source='es', target='en').translate(evaluacion_guardada['conclusion'])
         
-        st.text_area("Conclusion", value=conclusion_traducida, disabled=True)
+        st.text_area("Conclusion", value=conclusion_traducida)
 
         if st.button("Generate English Evaluation (PDF)"):
             datos = {
@@ -330,27 +325,14 @@ def main():
 
             evaluaciones_en = []
             for ev in evaluaciones:
-                # Traducir observaciones usando Google Cloud Translation API
-                response = translator.translate_text(
-                    contents=[ev['observaciones']],
-                    target_language_code="en",
-                    parent=f"projects/{st.secrets["gcp_project_id"]}"
-                )
-                translated_obs = response.translations[0].translated_text
-
+                translated_obs = GoogleTranslator(source='es', target='en').translate(ev['observaciones'])
                 evaluaciones_en.append({
                     "descripcion": DESCRIPCIONES_AREAS_EN[area][DESCRIPCIONES_AREAS[area].index(ev["descripcion"])],
                     "calificacion": ev["calificacion"],
                     "observaciones": translated_obs
                 })
             
-            # Traducir la conclusión usando Google Cloud Translation API
-            response = translator.translate_text(
-                contents=[conclusion],
-                target_language_code="en",
-                parent=f"projects/{st.secrets["gcp_project_id"]}"
-            )
-            translated_conclusion = response.translations[0].translated_text
+            translated_conclusion = GoogleTranslator(source='es', target='en').translate(conclusion)
 
             generar_pdf_con_reportlab(datos, evaluaciones_en, translated_conclusion, evaluador, output_path, language='en', header_pdf_path=header_pdf_path)
 
