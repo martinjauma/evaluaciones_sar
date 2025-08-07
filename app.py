@@ -51,7 +51,7 @@ def add_page_number(canvas, doc):
     canvas.restoreState()
 
 # Generar PDF con ReportLab
-def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path):
+def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path, language='es'):
     doc = SimpleDocTemplate(output_path, pagesize=A4, leftMargin=40, rightMargin=40, topMargin=40, bottomMargin=40)
     styles = getSampleStyleSheet()
 
@@ -79,14 +79,34 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     # Obtener la fecha desde los datos y formatearla en español
     fecha_original = datos['fecha']  # Asume que 'fecha' está en formato "DD/MM/YYYY"
     fecha_objeto = datetime.strptime(fecha_original, "%d/%m/%Y")
-    fecha_formateada = fecha_objeto.strftime("%B, %Y")  # "diciembre, 2024" en español
+    
+    if language == 'en':
+        fecha_formateada = fecha_objeto.strftime("%B, %Y")
+        title_text = "EVALUATION"
+        area_text = "Area"
+        nombre_text = "Name"
+        contacto_text = "Contact"
+        celular_text = "Phone"
+        union_text = "Union/Federation"
+        table_header = ["Description", "Rating", "Observations"]
+        total_text = "Total"
+        conclusion_text = "Conclusion"
+    else:
+        fecha_formateada = format_date(fecha_objeto, format='MMMM yyyy', locale='es').capitalize()
+        title_text = "EVALUACIÓN"
+        area_text = "Área"
+        nombre_text = "Nombre"
+        contacto_text = "Contacto"
+        celular_text = "Celular"
+        union_text = "Unión/Federación"
+        table_header = ["Descripción", "Calificación", "Observaciones"]
+        total_text = "Total"
+        conclusion_text = "Conclusión"
 
-    # Convertir el mes a español utilizando babel (si es necesario)
-    fecha_formateada = format_date(fecha_objeto, format='MMMM yyyy', locale='es').capitalize()
 
     # Crear una tabla para el encabezado con EVALUACIÓN y Fecha
     header_table_data = [
-        [Paragraph("<b>EVALUACIÓN</b>", styles["CustomTitle"]),
+        [Paragraph(f"<b>{title_text}</b>", styles["CustomTitle"]),
          Paragraph(f"{fecha_formateada}", ParagraphStyle(name="DateStyle", fontSize=11, alignment=2))]
     ]
 
@@ -106,15 +126,15 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
 
     # Información del evaluado
     elements.append(Spacer(1, 5))
-    elements.append(Paragraph(f"<b>Área:</b> {datos['area']}", styles["CustomSubtitle"]))
+    elements.append(Paragraph(f"<b>{area_text}:</b> {datos['area']}", styles["CustomSubtitle"]))
     elements.append(Spacer(1, 5))
-    elements.append(Paragraph(f"<b>Nombre:</b> {datos['nombre']}", styles["Normal"]))
-    elements.append(Paragraph(f"<b>Contacto:</b> {datos['email']} | <b>Celular:</b> {datos['celular']}", styles["Normal"]))
-    elements.append(Paragraph(f"<b>Unión/Federación:</b> {datos['uni']}", styles["Normal"]))
+    elements.append(Paragraph(f"<b>{nombre_text}:</b> {datos['nombre']}", styles["Normal"]))
+    elements.append(Paragraph(f"<b>{contacto_text}:</b> {datos['email']} | <b>{celular_text}:</b> {datos['celular']}", styles["Normal"]))
+    elements.append(Paragraph(f"<b>{union_text}:</b> {datos['uni']}", styles["Normal"]))
 
     # Tabla de evaluaciones
     elements.append(Spacer(1, 20))
-    table_data = [["Descripción", "Calificación", "Observaciones"]] + [
+    table_data = [table_header] + [
         [Paragraph(e["descripcion"], styles["TableCell"]),
          Paragraph(str(e["calificacion"]), styles["ClassificacionCell"]),  # Centrado y más grande
          Paragraph(e["observaciones"], styles["TableCell"])] for e in evaluaciones
@@ -134,11 +154,11 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
     # Total de calificaciones (más grande)
     elements.append(Spacer(1, 10))
     total_calificaciones = sum(e["calificacion"] for e in evaluaciones)
-    elements.append(Paragraph(f"<b>Total:</b> {total_calificaciones}", styles["CustomTitle"]))
+    elements.append(Paragraph(f"<b>{total_text}:</b> {total_calificaciones}", styles["CustomTitle"]))
 
     # Conclusión y Evaluador
     elements.append(Spacer(1, 20))
-    elements.append(Paragraph(f"<b>Conclusión:</b> {conclusion}", styles["Normal"]))
+    elements.append(Paragraph(f"<b>{conclusion_text}:</b> {conclusion}", styles["Normal"]))
     elements.append(Spacer(1, 10))
     elements.append(Paragraph(f"{evaluador}", styles["CustomFooter"]))
 
@@ -175,6 +195,7 @@ def main():
         contacto, celular, union = "", "", ""
 
     with tab1:
+        st.header("Evaluación en Español")
         descripciones = DESCRIPCIONES_AREAS[area]
         evaluaciones = []
         suma_calificaciones = 0
@@ -222,7 +243,7 @@ def main():
                 "celular": celular,
             }
             output_path = "evaluacion_final.pdf"
-            generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path)
+            generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path, language='es')
             guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
 
             with open(output_path, "rb") as pdf_file:
@@ -231,9 +252,10 @@ def main():
                                    mime="application/pdf")
 
     with tab2:
+        st.header("Evaluation in English")
         descripciones_en = DESCRIPCIONES_AREAS_EN[area]
         
-        if st.button("Generar Evaluación en Inglés (PDF)"):
+        if st.button("Generate English Evaluation (PDF)"):
             datos = {
                 "fecha": date.today().strftime('%d/%m/%Y'),
                 "area": area,
@@ -255,10 +277,10 @@ def main():
             
             translated_conclusion = GoogleTranslator(source='es', target='en').translate(conclusion)
 
-            generar_pdf_con_reportlab(datos, evaluaciones_en, translated_conclusion, evaluador, output_path)
+            generar_pdf_con_reportlab(datos, evaluaciones_en, translated_conclusion, evaluador, output_path, language='en')
 
             with open(output_path, "rb") as pdf_file:
-                st.download_button(label="Descargar Evaluación en Inglés (PDF)",
+                st.download_button(label="Download English Evaluation (PDF)",
                                    data=pdf_file, file_name=f"{datos['area']}-{datos['nombre']}-{datos['uni']}_EN.pdf",
                                    mime="application/pdf")
 
