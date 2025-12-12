@@ -1,15 +1,13 @@
 import streamlit as st
-from datetime import date, datetime
+from datetime import datetime
 import pandas as pd
 from config import DESCRIPCIONES_AREAS_EN, cargar_preguntas_desde_csv, cargar_evaluadores_desde_csv
 from pymongo import MongoClient
 from babel.dates import format_date
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import Image
-from reportlab.pdfgen import canvas
 from deep_translator import GoogleTranslator
 
 # Función para formatear la fecha en español
@@ -25,12 +23,7 @@ def cargar_evaluacion(nombre, area):
         {"nombre": nombre, "area": area},
         sort=[("fecha", -1)]  # Ordenar por fecha descendente para obtener la más reciente
     )
-    if evaluacion_guardada:
-        print(f"Evaluación encontrada para {nombre} en el área {area}.")
-        return evaluacion_guardada
-    else:
-        print(f"No se encontró evaluación para {nombre} en el área {area}.")
-        return None
+    return evaluacion_guardada
 
 # Guardar evaluación en MongoDB
 def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador, descripciones_areas):
@@ -48,16 +41,14 @@ def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador, descripciones
         "conclusion": conclusion
     }
     collection.insert_one(evaluacion_doc)
-    print("Evaluación guardada en MongoDB")
 
 # Función para agregar número de páginas al pie de cada página
 def add_page_number(canvas, doc):
     canvas.saveState()
     page_number = canvas.getPageNumber()  # Número de la página actual
-    total_pages = canvas.getPageNumber()  # Este valor lo mantenemos igual hasta el final
     canvas.setFont("Helvetica", 8)
-    canvas.drawString(520, 10, f"Página {page_number} de {total_pages}")  # Coloca el número de página en el pie
-    canvas.drawCentredString(300, 10, "Generado por el sistema de Evaluación SAR |")  # Texto centrado
+    canvas.drawString(520, 10, f"Página {page_number}")  # Coloca el número de página en el pie
+    canvas.drawCentredString(300, 10, "Generado por el sistema de Evaluación SAR")  # Texto centrado
     canvas.restoreState()
 
 # Generar PDF con ReportLab
@@ -169,7 +160,6 @@ def generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output
 
     # Agregar número de página al footer
     doc.build(elements, onFirstPage=add_page_number, onLaterPages=add_page_number)
-    print(f"PDF generado en {output_path}")
 
 # Aplicación principal de Streamlit
 def main():
