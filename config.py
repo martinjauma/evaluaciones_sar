@@ -1,118 +1,108 @@
 # config.py
+import pandas as pd
+import os
+from datetime import datetime
 
-# Descripciones por área
-#MAJ Aca tenemos todas los detalles de la evaluacion, si quiero hacer alguna cambio es aca
-DESCRIPCIONES_AREAS = {
-    "Video & Análisis": [
-        "Creatividad / Proactividad.",
-        "Toma de decisión / Resolución de problemas.",
-        "Puntualidad y compromiso.",
-        "Habilidades Comunicacionales.",
-        "Trabajo en equipo, con pares, resto de staff.",
-        "Comunicación Visual.",
-        "Datos y estadísticas.",
-        "Conocimiento del juego.",
-        "Apto para resolver tecnología por fuera del video análisis.",
-        "Captura de video - Real Time coding.",
-    ],
-    "Coaching": [
-        "Explicación ejercicios, dinámica, utilización tiempo.",
-        "Objetivo/s ejercicio.",
-        "Corrección y transmisión.",
-        "Retroalimentación (feedback).",
-        "Toma de decisiones - resolución de problemas.",
-        "Receptividad.",
-        "Relacionamiento otros coaches, resto del staff y jugadores.",
-        "Capacidad análisis equipo.",
-        "Capacidad análisis durante partido.",
-        "Capacidad análisis después partido.",
-    ],
-    "Fisio": [
-        "Creatividad / Proactividad.",
-        "Toma de decisión / Resolución de problemas.",
-        "Puntualidad y compromiso.",
-        "Habilidades Comunicacionales Jugadores, Staff, Extras.",
-        "Trabajo en equipo, con pares, resto de staff.",
-        "Organización y Planificación.",
-        "Manejo de fisio rom, gimnasio y campo.",
-        "Interpretación de la planificación.",
-        "Manejo de herramientas tecnológicas, GPS, evaluaciones.",
-        "Conocimiento del juego.",
-    ],
-    "Logística & Utilería": [
-        "Trabajo en equipo.",
-        "Planificación.",
-        "Orden.",
-        "Creatividad.",
-        "Puntualidad.",
-        "Toma de decisiones - resolución de problemas.",
-        "Conocimiento del juego.",
-        "Predisposición / Energía.",
-        "Capacidad de trabajo y aprender.",
-        "Proactivo.",
-    ],
-    "Match Official": [
-        "Compromiso / Puntualidad.",
-        "Objetivo/s personales de la capacitación.",
-        "Demostración de herramientas para la conducción del juego",
-        "Retroalimentación  (feedback)",
-        "Toma de decisiones - resolución de problemas.",
-        "Receptividad.",
-        "Relacionamiento otros coache , resto del staff y jugadores",
-        "Capacidad análisis equipo.",
-        "Capacidad análisis durante partido.",
-        "Capacidad análisis después partido.",
-    ],
-    "Médico": [
-        "Creatividad / Proactividad.",
-        "Toma de decisiones / Resolución de problemas.",
-        "Puntualidad / Compromiso.",
-        "Habilidades Comunicacionales C/ Jugadores / Staff, etc.",
-        "Trabajo en equipo con pares, resto del staff.",
-        "Organización y Planificación.",
-        "Manejo de fisio room, gimnasio y campo.",
-        "Interpretación de la planificación.",
-        "Manejo de herramientas tecnológicas, GPS, evaluaciones y revisión de video HIA.",
-        "Conocimiento del juego.",
-    ],
-    "Preparación Física": [
-        "Compromiso / Puntualidad.",
-        "Nivel formación y experiencia previa.",
-        "Planificación / Planteo de objetivos.",
-        "Trabajo en equipo, con pares, resto staff.",
-        "Habilidades comunicacionales jugadores, staff, extras.",
-        "Creatividad / Proactividad.",
-        "Toma de decisiones / Resolución de problemas.",
-        "Liderazgo de las actividades.",
-        "Control y organización de las actividades y los tiempos de trabajo.",
-        "Interpretación, análisis y uso de datos.",
-    ],
-    "Team Manager": [
-        "Compromiso / Puntualidad.",
-        "Experiencia previa.",
-        "Planificación / Planteo de objetivos.",
-        "Trabajo en campo.",
-        "Habilidades comunicacionales (jugadores, staff, extras).",
-        "Creatividad / Proactividad.",
-        "Toma de decisiones / Resolución de problemas.",
-        "Liderazgo de las actividades.",
-        "Trabajo en equipo, con pares, resto de staff.",
-        "Control y organización de las actividades.",
-    ],
-    "Nutrición":[
-        "Creatividad /Proactividad", 
-        "Toma de decisión / Resolución de problemas", 
-        "Gestión del tiempo y compromiso", 
-        "Habilidades Comunicacionales Jugadores, Staff, Extras", 
-        "Trabajo en equipo, con pares, resto de staff", 
-        "Nivel de formación en Nutrición Deportiva", 
-        "Manejo protocolo ISAK 2 para medir", 
-        "Interpretación antropométrica",
-        "Manejo de herramientas tecnológicas, informáticas, etc.",
-        "Conocimiento del juego y de preparación física",
+# Función para cargar las preguntas desde el CSV por año
+def cargar_preguntas_desde_csv(year=None, archivo_csv="preguntas_areas.csv"):
+    """
+    Carga las preguntas de evaluación desde un archivo CSV filtradas por año.
 
-    ],
-}
+    Args:
+        year: Año de las preguntas (None = año actual)
+        archivo_csv: Ruta al archivo CSV con las preguntas
+
+    Returns:
+        dict: Diccionario con las áreas como keys y listas de preguntas como values
+    """
+    try:
+        # Si no se proporciona año, usar el año actual
+        if year is None:
+            year = datetime.now().year
+
+        # Obtener la ruta absoluta del archivo
+        ruta_base = os.path.dirname(os.path.abspath(__file__))
+        ruta_completa = os.path.join(ruta_base, archivo_csv)
+
+        # Leer el CSV
+        df = pd.read_csv(ruta_completa)
+
+        # Filtrar por año
+        df_year = df[df['Year'] == year]
+
+        # Si no hay datos para ese año, usar el año más reciente disponible
+        if df_year.empty:
+            max_year = df['Year'].max()
+            print(f"⚠️ No hay preguntas para el año {year}. Usando año {max_year}")
+            df_year = df[df['Year'] == max_year]
+
+        # Crear diccionario agrupando por área
+        preguntas_dict = {}
+        for area in df_year['Area'].unique():
+            preguntas = df_year[df_year['Area'] == area].sort_values('Numero_Pregunta')['Pregunta'].tolist()
+            preguntas_dict[area] = preguntas
+
+        return preguntas_dict
+    except Exception as e:
+        print(f"Error al cargar preguntas desde CSV: {e}")
+        # Si falla, retornar diccionario vacío para que la app no se rompa
+        return {}
+
+# Función para cargar evaluadores desde el CSV por año
+def cargar_evaluadores_desde_csv(year=None, archivo_csv="evaluadores_areas.csv"):
+    """
+    Carga los evaluadores desde un archivo CSV filtrados por año.
+
+    Args:
+        year: Año de los evaluadores (None = año actual)
+        archivo_csv: Ruta al archivo CSV con los evaluadores
+
+    Returns:
+        dict: Diccionario con las áreas como keys y nombres de evaluadores como values
+    """
+    try:
+        # Si no se proporciona año, usar el año actual
+        if year is None:
+            year = datetime.now().year
+
+        # Obtener la ruta absoluta del archivo
+        ruta_base = os.path.dirname(os.path.abspath(__file__))
+        ruta_completa = os.path.join(ruta_base, archivo_csv)
+
+        # Leer el CSV
+        df = pd.read_csv(ruta_completa)
+
+        # Filtrar por año
+        df_year = df[df['Year'] == year]
+
+        # Si no hay datos para ese año, usar el año más reciente disponible
+        if df_year.empty:
+            max_year = df['Year'].max()
+            print(f"⚠️ No hay evaluadores para el año {year}. Usando año {max_year}")
+            df_year = df[df['Year'] == max_year]
+
+        # Crear diccionario con área y evaluador
+        evaluadores_dict = {}
+        for _, row in df_year.iterrows():
+            evaluadores_dict[row['Area']] = row['Evaluador']
+
+        return evaluadores_dict
+    except Exception as e:
+        print(f"Error al cargar evaluadores desde CSV: {e}")
+        # Si falla, retornar diccionario vacío
+        return {}
+
+# Descripciones por área (cargadas desde CSV)
+# MAJ: Ahora las preguntas se cargan desde preguntas_areas.csv con soporte para años
+# Para modificar las preguntas, editar el archivo preguntas_areas.csv
+# Por defecto, carga las del año actual
+DESCRIPCIONES_AREAS = cargar_preguntas_desde_csv()
+
+# Evaluadores por área (cargados desde CSV)
+# MAJ: Ahora los evaluadores se cargan desde evaluadores_areas.csv con soporte para años
+# Para modificar los evaluadores, editar el archivo evaluadores_areas.csv
+# Por defecto, carga los del año actual
+EVALUADORES_AREAS = cargar_evaluadores_desde_csv()
 
 DESCRIPCIONES_AREAS_EN = {
     "Video & Análisis": [
@@ -223,17 +213,4 @@ DESCRIPCIONES_AREAS_EN = {
         "Management of technological, computer, etc. tools.",
         "Knowledge of the game and physical preparation",
     ],
-}
-#MAJ Este diccionario es para poner en AREA y el Evaluador de esa Area
-# Diccionario de evaluadores por área
-EVALUADORES_AREAS = {
-    "Coaching": "D. Hourcade, L. Piña, P. Perez, R. Perez, R. Le Fort, Duran, P. Bouza, E. Meneses, Guzman.",
-    "Fisio": "Lic. Martín Nuñez",
-    "Logística & Utilería": "Javier Sorbera",
-    "Match Official": "Juan Sylvestre",
-    "Médico": "Dr. Juan Pablo Toledo",
-    "Nutrición": "Lic. Romina Garavaglia",
-    "Preparación Física": "Gonzalo Santos",
-    "Team Manager": "Juan Manuel García",
-    "Video & Análisis": "Martín Jauma",   
 }

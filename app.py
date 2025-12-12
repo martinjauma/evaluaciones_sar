@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import date, datetime
 import pandas as pd
-from config import DESCRIPCIONES_AREAS, EVALUADORES_AREAS, DESCRIPCIONES_AREAS_EN
+from config import DESCRIPCIONES_AREAS_EN, cargar_preguntas_desde_csv, cargar_evaluadores_desde_csv
 from pymongo import MongoClient
 from babel.dates import format_date
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
@@ -33,12 +33,12 @@ def cargar_evaluacion(nombre, area):
         return None
 
 # Guardar evaluación en MongoDB
-def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador):
+def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador, descripciones_areas):
     # Asegurarse de que todas las descripciones estén en evaluaciones, si no tienen calificación asignada se les da un 0
-    for e in DESCRIPCIONES_AREAS[datos["area"]]: #MAJ para cambiar DESCRIPCIONES_AREAS esta en Config.py
+    for e in descripciones_areas[datos["area"]]: #MAJ las descripciones se pasan como parámetro
         if not any(ev["descripcion"] == e for ev in evaluaciones):
             evaluaciones.append({"descripcion": e, "calificacion": 0, "observaciones": ""})
-    
+
     evaluacion_doc = {
         "nombre": datos["nombre"],
         "area": datos["area"],
@@ -189,33 +189,36 @@ def main():
     selected_header = st.sidebar.selectbox("Seleccionar Encabezado", list(header_options.keys()))
     header_pdf_path = header_options[selected_header]
 
+    # Cargar datos antes de los tabs para que estén disponibles en ambos
+    PARTICIPANTES_CSV_PATH = "SAR 2024 ACADEMIA HP/Participantes x Areas.csv" #MAJ CSV DE LOS PARTICIPANTES A EVALUAR
+    df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH)
+
+    # Filtrar por año seleccionado y cargar preguntas/evaluadores del año correspondiente
+    year_to_filter = selected_header.split(" ")[-1]
+    year_int = int(year_to_filter)
+    df_participantes = df_participantes[df_participantes["FECHA"].str.contains(year_to_filter, na=False)]
+
+    # Cargar preguntas y evaluadores para el año seleccionado
+    DESCRIPCIONES_AREAS = cargar_preguntas_desde_csv(year=year_int)
+    EVALUADORES_AREAS = cargar_evaluadores_desde_csv(year=year_int)
+
+    area = st.sidebar.selectbox("Área de Evaluación", list(DESCRIPCIONES_AREAS.keys()))
+    participantes_area = df_participantes[df_participantes["AREA"] == area]
+    evaluador = EVALUADORES_AREAS.get(area, "Evaluador no asignado")
+    st.sidebar.text_input("Evaluador", value=evaluador, disabled=True)
+    nombre = st.sidebar.selectbox("Nombre del Evaluado", participantes_area["NOMBRE"].unique())
+
+    if nombre:
+        datos_participante = participantes_area[participantes_area["NOMBRE"] == nombre].iloc[0]
+        contacto, celular, union, fecha_evaluacion = datos_participante["EMAIL"], datos_participante["CONTACTO"], datos_participante["UNION/FEDERACION"], datos_participante["FECHA"]
+        st.sidebar.write(f"**Fecha de Evaluación:** {fecha_evaluacion}")
+        evaluacion_guardada = cargar_evaluacion(nombre, area)
+    else:
+        contacto, celular, union, fecha_evaluacion = "", "", "", ""
+        evaluacion_guardada = None
+
+    # Crear tabs después de cargar los datos
     tab1, tab2 = st.tabs(["Español", "English"])
-
-    with tab1:
-        PARTICIPANTES_CSV_PATH = "SAR 2024 ACADEMIA HP/Participantes x Areas.csv" #MAJ CSV DE LOS PARTICIPANTES A EVALUAR
-        df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH)
-        
-        # Filtrar por año seleccionado
-        year_to_filter = selected_header.split(" ")[-1]
-        df_participantes = df_participantes[df_participantes["FECHA"].str.contains(year_to_filter, na=False)]
-
-        area = st.sidebar.selectbox("Área de Evaluación", list(DESCRIPCIONES_AREAS.keys()))
-        participantes_area = df_participantes[df_participantes["AREA"] == area]
-        evaluador = EVALUADORES_AREAS.get(area, "Evaluador no asignado")
-        st.sidebar.text_input("Evaluador", value=evaluador, disabled=True)
-        nombre = st.sidebar.selectbox("Nombre del Evaluado", participantes_area["NOMBRE"].unique())
-
-        if nombre:
-            datos_participante = participantes_area[participantes_area["NOMBRE"] == nombre].iloc[0]
-            contacto, celular, union, fecha_evaluacion = datos_participante["EMAIL"], datos_participante["CONTACTO"], datos_participante["UNION/FEDERACION"], datos_participante["FECHA"]
-            st.sidebar.write(f"**Fecha de Evaluación:** {fecha_evaluacion}")
-            evaluacion_guardada = cargar_evaluacion(nombre, area)
-        else:
-            contacto, celular, union, fecha_evaluacion = "", "", "", ""
-            evaluacion_guardada = None
-
-        # Este bloque se movió aquí para estar fuera del if/else de la carga de datos
-        suma_calificaciones = 0
 
     with tab1:
         st.header("Evaluación en Español")
@@ -285,7 +288,7 @@ def main():
             }
             output_path = "evaluacion_final.pdf"
             generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path, language='es', header_pdf_path=header_pdf_path)
-            guardar_evaluacion(datos, evaluaciones, conclusion, evaluador)
+            guardar_evaluacion(datos, evaluaciones, conclusion, evaluador, DESCRIPCIONES_AREAS)
 
             with open(output_path, "rb") as pdf_file:
                 st.download_button(label="Descargar Evaluación (PDF)",
