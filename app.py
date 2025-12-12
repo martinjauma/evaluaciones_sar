@@ -182,6 +182,7 @@ def main():
     st.title("Generador de Evaluaciones")
 
     header_options = {
+        "SAR 2025": "images/header_2025.png",
         "SAR 2024": "images/header_2024.png",
         "SAR 2023": "images/header_2023.png"
     }
@@ -192,7 +193,12 @@ def main():
 
     with tab1:
         PARTICIPANTES_CSV_PATH = "SAR 2024 ACADEMIA HP/Participantes x Areas.csv" #MAJ CSV DE LOS PARTICIPANTES A EVALUAR
-        df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH) 
+        df_participantes = pd.read_csv(PARTICIPANTES_CSV_PATH)
+        
+        # Filtrar por año seleccionado
+        year_to_filter = selected_header.split(" ")[-1]
+        df_participantes = df_participantes[df_participantes["FECHA"].str.contains(year_to_filter, na=False)]
+
         area = st.sidebar.selectbox("Área de Evaluación", list(DESCRIPCIONES_AREAS.keys()))
         participantes_area = df_participantes[df_participantes["AREA"] == area]
         evaluador = EVALUADORES_AREAS.get(area, "Evaluador no asignado")
