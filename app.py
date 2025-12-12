@@ -18,15 +18,14 @@ def formatear_fecha(fecha):
 client = MongoClient(st.secrets["mongo_uri"])
 db = client[st.secrets["db_name"]]  # Usamos el nombre de la base de datos
 collection = db[st.secrets["collection_name"]]  # Usamos el nombre de la colección
-def cargar_evaluacion(nombre, area):
+def cargar_evaluacion(nombre, area, year):
     evaluacion_guardada = collection.find_one(
-        {"nombre": nombre, "area": area},
-        sort=[("fecha", -1)]  # Ordenar por fecha descendente para obtener la más reciente
+        {"nombre": nombre, "area": area, "year": year}
     )
     return evaluacion_guardada
 
 # Guardar evaluación en MongoDB
-def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador, descripciones_areas):
+def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador, descripciones_areas, year):
     # Asegurarse de que todas las descripciones estén en evaluaciones, si no tienen calificación asignada se les da un 0
     for e in descripciones_areas[datos["area"]]: #MAJ las descripciones se pasan como parámetro
         if not any(ev["descripcion"] == e for ev in evaluaciones):
@@ -35,12 +34,20 @@ def guardar_evaluacion(datos, evaluaciones, conclusion, evaluador, descripciones
     evaluacion_doc = {
         "nombre": datos["nombre"],
         "area": datos["area"],
+        "year": year,  # Agregar el año
         "fecha": datetime.now(),
         "evaluador": evaluador,
         "evaluaciones": evaluaciones,  # Incluye las calificaciones y observaciones
         "conclusion": conclusion
     }
-    collection.insert_one(evaluacion_doc)
+
+    # Usar update_one con upsert para actualizar si existe o crear si no existe
+    # Buscar por nombre, área y año
+    collection.update_one(
+        {"nombre": datos["nombre"], "area": datos["area"], "year": year},
+        {"$set": evaluacion_doc},
+        upsert=True
+    )
 
 # Función para agregar número de páginas al pie de cada página
 def add_page_number(canvas, doc):
@@ -198,12 +205,12 @@ def main():
     st.sidebar.text_input("Evaluador", value=evaluador, disabled=True)
     nombre = st.sidebar.selectbox("Nombre del Evaluado", participantes_area["NOMBRE"].unique())
 
-    # Limpiar session_state si cambió el participante o área
-    current_selection = f"{nombre}_{area}"
+    # Limpiar session_state si cambió el participante, área o año
+    current_selection = f"{nombre}_{area}_{year_int}"
     if "last_selection" not in st.session_state:
         st.session_state["last_selection"] = current_selection
     elif st.session_state["last_selection"] != current_selection:
-        # Cambió el participante o área, limpiar session_state
+        # Cambió el participante, área o año, limpiar session_state
         keys_to_delete = [k for k in st.session_state.keys() if k.startswith("cal_") or k.startswith("obs_") or k == "conclusion_guardada"]
         for k in keys_to_delete:
             del st.session_state[k]
@@ -213,7 +220,7 @@ def main():
         datos_participante = participantes_area[participantes_area["NOMBRE"] == nombre].iloc[0]
         contacto, celular, union, fecha_evaluacion = datos_participante["EMAIL"], datos_participante["CONTACTO"], datos_participante["UNION/FEDERACION"], datos_participante["FECHA"]
         st.sidebar.write(f"**Fecha de Evaluación:** {fecha_evaluacion}")
-        evaluacion_guardada = cargar_evaluacion(nombre, area)
+        evaluacion_guardada = cargar_evaluacion(nombre, area, year_int)
 
         # DEBUG: Mostrar si se encontró evaluación guardada
         if evaluacion_guardada:
@@ -310,7 +317,7 @@ def main():
             }
             output_path = "evaluacion_final.pdf"
             generar_pdf_con_reportlab(datos, evaluaciones, conclusion, evaluador, output_path, language='es', header_pdf_path=header_pdf_path)
-            guardar_evaluacion(datos, evaluaciones, conclusion, evaluador, DESCRIPCIONES_AREAS)
+            guardar_evaluacion(datos, evaluaciones, conclusion, evaluador, DESCRIPCIONES_AREAS, year_int)
 
             with open(output_path, "rb") as pdf_file:
                 st.download_button(label="Descargar Evaluación (PDF)",
