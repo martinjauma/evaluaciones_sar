@@ -1,8 +1,5 @@
-# Ignorar la carpeta .streamlit/secrets (si se usa para secretos)
-.streamlit/
-
-# Ignorar el archivo secrets.toml
-secrets.toml
+# Ignorar solo el archivo secrets.toml dentro de .streamlit
+.streamlit/secrets.toml
 
 # Ignorar la carpeta de entorno virtual
 myenv/
