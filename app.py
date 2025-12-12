@@ -251,6 +251,9 @@ def main():
         contacto, celular, union, fecha_evaluacion = "", "", "", ""
         evaluacion_guardada = None
 
+    # Crear placeholder para el total en el sidebar
+    sidebar_total_placeholder = st.sidebar.empty()
+
     # Crear tabs después de cargar los datos
     tab1, tab2 = st.tabs(["Español", "English"])
 
@@ -296,15 +299,15 @@ def main():
         # La conclusión también usa session_state
         conclusion = st.text_area("Conclusión de la Evaluación", key="conclusion_guardada")
 
-        # Mostrar suma de calificaciones con colores condicionales
+        # Mostrar suma de calificaciones con colores condicionales en el placeholder
         if suma_calificaciones <= 29:
             color = "red"
         elif 30 <= suma_calificaciones <= 40:
             color = "yellow"
         else:
             color = "green"
-        
-        st.sidebar.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones} puntos</h1>", unsafe_allow_html=True)
+
+        sidebar_total_placeholder.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones} puntos</h1>", unsafe_allow_html=True)
 
         if st.button("Generar Evaluación (PDF) y Guardar"):
             datos = {
@@ -390,7 +393,7 @@ def main():
 
         conclusion_en = st.text_area("Conclusion", value=conclusion_traducida, key="conclusion_en")
 
-        # Mostrar suma de calificaciones
+        # Mostrar suma de calificaciones en el placeholder (sobrescribe el del tab español)
         if suma_calificaciones_en <= 29:
             color = "red"
         elif 30 <= suma_calificaciones_en <= 40:
@@ -398,7 +401,7 @@ def main():
         else:
             color = "green"
 
-        st.sidebar.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones_en} points</h1>", unsafe_allow_html=True)
+        sidebar_total_placeholder.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones_en} points</h1>", unsafe_allow_html=True)
 
         if st.button("Generate English Evaluation (PDF)"):
             datos = {
