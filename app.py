@@ -208,11 +208,45 @@ def main():
     st.sidebar.text_input("Evaluador", value=evaluador, disabled=True)
     nombre = st.sidebar.selectbox("Nombre del Evaluado", participantes_area["NOMBRE"].unique())
 
+    # Limpiar session_state si cambió el participante o área
+    current_selection = f"{nombre}_{area}"
+    if "last_selection" not in st.session_state:
+        st.session_state["last_selection"] = current_selection
+    elif st.session_state["last_selection"] != current_selection:
+        # Cambió el participante o área, limpiar session_state
+        keys_to_delete = [k for k in st.session_state.keys() if k.startswith("cal_") or k.startswith("obs_") or k == "conclusion_guardada"]
+        for k in keys_to_delete:
+            del st.session_state[k]
+        st.session_state["last_selection"] = current_selection
+
     if nombre:
         datos_participante = participantes_area[participantes_area["NOMBRE"] == nombre].iloc[0]
         contacto, celular, union, fecha_evaluacion = datos_participante["EMAIL"], datos_participante["CONTACTO"], datos_participante["UNION/FEDERACION"], datos_participante["FECHA"]
         st.sidebar.write(f"**Fecha de Evaluación:** {fecha_evaluacion}")
         evaluacion_guardada = cargar_evaluacion(nombre, area)
+
+        # DEBUG: Mostrar si se encontró evaluación guardada
+        if evaluacion_guardada:
+            st.sidebar.success(f"✅ Evaluación encontrada en MongoDB")
+            st.sidebar.write(f"📊 {len(evaluacion_guardada.get('evaluaciones', []))} preguntas guardadas")
+
+            # Inicializar session_state con los datos guardados
+            # IMPORTANTE: Siempre actualizar session_state con los datos de MongoDB
+            # para asegurar que los widgets tengan los valores correctos
+            for ev in evaluacion_guardada.get('evaluaciones', []):
+                desc = ev.get('descripcion', '')
+                key_cal = f"cal_{desc}"
+                key_obs = f"obs_{desc}"
+                # Solo actualizar si no existe en session_state (no fue editado por el usuario)
+                if key_cal not in st.session_state:
+                    st.session_state[key_cal] = str(ev.get('calificacion', ''))
+                if key_obs not in st.session_state:
+                    st.session_state[key_obs] = ev.get('observaciones', '')
+            # Guardar conclusión
+            if 'conclusion_guardada' not in st.session_state:
+                st.session_state['conclusion_guardada'] = evaluacion_guardada.get('conclusion', '')
+        else:
+            st.sidebar.info("ℹ️ No hay evaluación previa guardada")
     else:
         contacto, celular, union, fecha_evaluacion = "", "", "", ""
         evaluacion_guardada = None
@@ -241,18 +275,13 @@ def main():
             unsafe_allow_html=True
         )
         for i, descripcion in enumerate(descripciones):
-            # Cargar datos guardados si existen
-            calificacion_guardada = ""
-            observaciones_guardadas = ""
-            if evaluacion_guardada and 'evaluaciones' in evaluacion_guardada and i < len(evaluacion_guardada['evaluaciones']):
-                calificacion_guardada = evaluacion_guardada['evaluaciones'][i].get('calificacion', "")
-                observaciones_guardadas = evaluacion_guardada['evaluaciones'][i].get('observaciones', "")
-
             # Mostrar descripción con estilo personalizado
             st.markdown(f'<p class="descripcion-grande">{descripcion}</p>', unsafe_allow_html=True)
-            # Cambiar input de número a texto (solo aceptando 0, 1, 2, 3, 4, 5)
-            calificacion = st.text_input(f"Puntaje 0 al 5", value=str(calificacion_guardada), key=f"cal_{descripcion}")
-            observaciones = st.text_area(f"Observaciones", value=observaciones_guardadas, key=f"obs_{descripcion}")
+
+            # Los valores ahora vienen directamente de session_state (si existen) o quedan vacíos
+            # Streamlit maneja automáticamente el valor con el key
+            calificacion = st.text_input(f"Puntaje 0 al 5", key=f"cal_{descripcion}")
+            observaciones = st.text_area(f"Observaciones", key=f"obs_{descripcion}")
             
             # Solo aceptar valores de "0", "1", "2", "3", "4", "5"
             if calificacion in ['0', '1', '2', '3', '4', '5']:
@@ -264,8 +293,8 @@ def main():
             # Separar cada bloque con una línea
             st.markdown("---")
         
-        conclusion_guardada = evaluacion_guardada['conclusion'] if evaluacion_guardada else ""
-        conclusion = st.text_area("Conclusión de la Evaluación", value=conclusion_guardada)
+        # La conclusión también usa session_state
+        conclusion = st.text_area("Conclusión de la Evaluación", key="conclusion_guardada")
 
         # Mostrar suma de calificaciones con colores condicionales
         if suma_calificaciones <= 29:
@@ -297,28 +326,79 @@ def main():
 
     with tab2:
         st.header("Evaluation in English")
-        descripciones_en = DESCRIPCIONES_AREAS_EN[area]
+        descripciones_en = DESCRIPCIONES_AREAS_EN.get(area, DESCRIPCIONES_AREAS[area])  # Fallback a español si no existe traducción
+        descripciones_es = DESCRIPCIONES_AREAS[area]  # Necesitamos las descripciones en español para mapear
 
-        for i, descripcion in enumerate(descripciones_en):
-            # Cargar y traducir datos guardados si existen
+        evaluaciones_en = []
+        suma_calificaciones_en = 0
+
+        # CSS personalizado
+        st.markdown(
+            """
+            <style>
+            .descripcion-grande {
+                font-size: 30px;
+                font-weight: bold;
+                color: #fff;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+
+        for i, (descripcion_en, descripcion_es) in enumerate(zip(descripciones_en, descripciones_es)):
+            # Cargar y traducir datos guardados si existen - BUSCAR POR DESCRIPCIÓN EXACTA
             calificacion_guardada = ""
             observaciones_traducidas = ""
-            if evaluacion_guardada and 'evaluaciones' in evaluacion_guardada and i < len(evaluacion_guardada['evaluaciones']):
-                calificacion_guardada = evaluacion_guardada['evaluaciones'][i].get('calificacion', "")
-                observaciones_originales = evaluacion_guardada['evaluaciones'][i].get('observaciones', "")
-                if observaciones_originales:
-                    observaciones_traducidas = GoogleTranslator(source='es', target='en').translate(observaciones_originales)
+            if evaluacion_guardada and 'evaluaciones' in evaluacion_guardada:
+                # Buscar la evaluación que coincida con esta descripción en español
+                for ev_guardada in evaluacion_guardada['evaluaciones']:
+                    if ev_guardada.get('descripcion', '') == descripcion_es:
+                        calificacion_guardada = ev_guardada.get('calificacion', "")
+                        observaciones_originales = ev_guardada.get('observaciones', "")
+                        if observaciones_originales:
+                            try:
+                                observaciones_traducidas = GoogleTranslator(source='es', target='en').translate(observaciones_originales)
+                            except:
+                                observaciones_traducidas = observaciones_originales
+                        break
 
-            st.markdown(f'<p class="descripcion-grande">{descripcion}</p>', unsafe_allow_html=True)
-            st.text_input(f"Score 0 to 5", value=str(calificacion_guardada), key=f"cal_en_{descripcion}")
-            st.text_area(f"Observations", value=observaciones_traducidas, key=f"obs_en_{descripcion}")
+            st.markdown(f'<p class="descripcion-grande">{descripcion_en}</p>', unsafe_allow_html=True)
+            calificacion_en = st.text_input(f"Score 0 to 5", value=str(calificacion_guardada), key=f"cal_en_{i}")
+            observaciones_en = st.text_area(f"Observations", value=observaciones_traducidas, key=f"obs_en_{i}")
+
+            # Validar y guardar evaluaciones
+            if calificacion_en in ['0', '1', '2', '3', '4', '5']:
+                evaluaciones_en.append({
+                    "descripcion": descripcion_en,
+                    "descripcion_es": descripcion_es,  # Guardamos la versión en español también
+                    "calificacion": int(calificacion_en),
+                    "observaciones": observaciones_en
+                })
+                suma_calificaciones_en += int(calificacion_en)
+            elif calificacion_en != "":
+                st.warning("Only values 0, 1, 2, 3, 4, 5 are allowed for ratings.")
+
             st.markdown("---")
 
         conclusion_traducida = ""
         if evaluacion_guardada and 'conclusion' in evaluacion_guardada and evaluacion_guardada['conclusion']:
-            conclusion_traducida = GoogleTranslator(source='es', target='en').translate(evaluacion_guardada['conclusion'])
-        
-        st.text_area("Conclusion", value=conclusion_traducida)
+            try:
+                conclusion_traducida = GoogleTranslator(source='es', target='en').translate(evaluacion_guardada['conclusion'])
+            except:
+                conclusion_traducida = evaluacion_guardada['conclusion']
+
+        conclusion_en = st.text_area("Conclusion", value=conclusion_traducida, key="conclusion_en")
+
+        # Mostrar suma de calificaciones
+        if suma_calificaciones_en <= 29:
+            color = "red"
+        elif 30 <= suma_calificaciones_en <= 40:
+            color = "yellow"
+        else:
+            color = "green"
+
+        st.sidebar.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones_en} points</h1>", unsafe_allow_html=True)
 
         if st.button("Generate English Evaluation (PDF)"):
             datos = {
@@ -331,18 +411,7 @@ def main():
             }
             output_path = "evaluacion_final_en.pdf"
 
-            evaluaciones_en = []
-            for ev in evaluaciones:
-                translated_obs = GoogleTranslator(source='es', target='en').translate(ev['observaciones'])
-                evaluaciones_en.append({
-                    "descripcion": DESCRIPCIONES_AREAS_EN[area][DESCRIPCIONES_AREAS[area].index(ev["descripcion"])],
-                    "calificacion": ev["calificacion"],
-                    "observaciones": translated_obs
-                })
-            
-            translated_conclusion = GoogleTranslator(source='es', target='en').translate(conclusion)
-
-            generar_pdf_con_reportlab(datos, evaluaciones_en, translated_conclusion, evaluador, output_path, language='en', header_pdf_path=header_pdf_path)
+            generar_pdf_con_reportlab(datos, evaluaciones_en, conclusion_en, evaluador, output_path, language='en', header_pdf_path=header_pdf_path)
 
             with open(output_path, "rb") as pdf_file:
                 st.download_button(label="Download English Evaluation (PDF)",
