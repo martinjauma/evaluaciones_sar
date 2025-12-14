@@ -248,9 +248,6 @@ def main():
         contacto, celular, union, fecha_evaluacion = "", "", "", ""
         evaluacion_guardada = None
 
-    # Crear placeholder para el total en el sidebar
-    sidebar_total_placeholder = st.sidebar.empty()
-
     # Crear tabs después de cargar los datos
     tab1, tab2 = st.tabs(["Español", "English"])
 
@@ -282,7 +279,7 @@ def main():
             # Streamlit maneja automáticamente el valor con el key
             calificacion = st.text_input(f"Puntaje 0 al 5", key=f"cal_{descripcion}")
             observaciones = st.text_area(f"Observaciones", key=f"obs_{descripcion}")
-            
+
             # Solo aceptar valores de "0", "1", "2", "3", "4", "5"
             if calificacion in ['0', '1', '2', '3', '4', '5']:
                 evaluaciones.append({"descripcion": descripcion, "calificacion": int(calificacion), "observaciones": observaciones})
@@ -292,11 +289,11 @@ def main():
 
             # Separar cada bloque con una línea
             st.markdown("---")
-        
+
         # La conclusión también usa session_state
         conclusion = st.text_area("Conclusión de la Evaluación", key="conclusion_guardada")
 
-        # Mostrar suma de calificaciones con colores condicionales en el placeholder
+        # Mostrar suma de calificaciones con colores condicionales en el sidebar
         if suma_calificaciones <= 29:
             color = "red"
         elif 30 <= suma_calificaciones <= 40:
@@ -304,7 +301,7 @@ def main():
         else:
             color = "green"
 
-        sidebar_total_placeholder.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones} puntos</h1>", unsafe_allow_html=True)
+        st.sidebar.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones} puntos</h1>", unsafe_allow_html=True)
 
         if st.button("Generar Evaluación (PDF) y Guardar"):
             datos = {
@@ -390,7 +387,7 @@ def main():
 
         conclusion_en = st.text_area("Conclusion", value=conclusion_traducida, key="conclusion_en")
 
-        # Mostrar suma de calificaciones en el placeholder (sobrescribe el del tab español)
+        # Mostrar suma de calificaciones en el sidebar
         if suma_calificaciones_en <= 29:
             color = "red"
         elif 30 <= suma_calificaciones_en <= 40:
@@ -398,7 +395,7 @@ def main():
         else:
             color = "green"
 
-        sidebar_total_placeholder.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones_en} points</h1>", unsafe_allow_html=True)
+        st.sidebar.markdown(f"<h1 style='color:{color}; font-size: 30px;'>{suma_calificaciones_en} points</h1>", unsafe_allow_html=True)
 
         if st.button("Generate English Evaluation (PDF)"):
             datos = {
