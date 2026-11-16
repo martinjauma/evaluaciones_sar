@@ -1,5 +1,7 @@
-# Ignorar solo el archivo secrets.toml dentro de .streamlit
-.streamlit/secrets.toml
+# Ignorar credenciales y variables de entorno locales
+.env*
+credenciales_*.csv
+credenciales_*.env
 
 # Ignorar la carpeta de entorno virtual
 myenv/
@@ -20,4 +22,4 @@ evaluacion_final.pdf
 evaluacion_final_en.pdf
 
 # Next.js Fullstack Web App (Repositorio separado en github.com/martinjauma/sar.git)
-sar-web/
+sar-web/.streamlit/secrets.toml
