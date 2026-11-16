@@ -26,65 +26,103 @@ ni no,UNION/FEDERACION,NOMBRE,EMAIL,CONTACTO,AREA,FECHA
 25,Chile,Juan Salazar,jsalazar@chilerugby.org,56971992354,Video & Análisis,"Noviembre, 2024"
 26,UAR,Virasoro Jose,virasorojose1@gmail.com,+54 9 3517 30-3632,Video & Análisis,"Noviembre, 2024"
 27,URP,Dan Riquelme,danis_riquelme@hotmail.com,+595 981 213632,Video & Análisis,"Noviembre, 2024"
-27,URU,Ignacio Inda,indacameignacio@gmail.com,+598 98 200 906,Team Manager,"Noviembre, 2024"
-28,URP,Oscar Mendez,omendez@urp.org.py,595 971 207507,Team Manager,"Noviembre, 2024"
-29,FCR,Manuela Caicedo,managertucanes@colombia.rugby,573166295498,Team Manager,"Noviembre, 2024"
-30,UAR,Ferreyra Orlando ,orlandoferreyra10@hotmail.com,,Team Manager,"Noviembre, 2024"
-31,CBRu,Felipe Braun,felipe.braun@brasilrugby.com.br,+55 11 95599-1819,Team Manager,"Noviembre, 2024"
-32,URU,Santiago Antinori,Santian_a@hotmail.com,+54 9 3857 67 5816,Fisio,"Noviembre, 2024"
-33,URP,Rocio Bareiro,bareiroro14@gmail.com,595 994 489373,Fisio,"Noviembre, 2024"
-34,Chile,Joaquin Ibañez,jibanez@chilerugby.org,56998880284,Fisio,"Noviembre, 2024"
-35,UAR,Martearena Maximo,maximomartearena@gmail.com,,Fisio,"Noviembre, 2024"
-36,CBRu,Bruno Godoy,bruno.godoy@brasilrugby.com.br,+55 12 99185-3794,Fisio,"Noviembre, 2024"
-37,URU,Rodrigo Masciardi,rodrigo.portillo.masciadri@gmail.com,+598 98 405 527,Match Official,"Noviembre, 2024"
-38,FCR,Luis Laino,referato@colombia.rugby,573012679065,Match Official,"Noviembre, 2024"
-39,UAR,UAR,,,Match Official,"Noviembre, 2024"
-40,URP,Axel Cortazar,axel.cortazar40@gmail.com,595982482985,Match Official,"Noviembre, 2024"
-41,FCR,Andres Santos,competencias@colombia.rugby,573215383753,Logística & Utilería,"Noviembre, 2024"
-42,URU,Santiago Suarez,,,Logística & Utilería,"Noviembre, 2024"
-43,FER,Juan Gonzalez,juan.gonzalez.marruecos@gmail.com,34637777075,Coaching,"Noviembre, 2024"
-44,FCR,Lissete Carolina Martinez,capacitaciones@colombia.rugby,57 310 4338416,Coaching,"Diciembre, 2023"
-45,URU,Ivo Dugonjic,dugonjic.ivo@gmail.com,598 99388149,Coaching,Diciembre 2025
-46,CBRU,Guilherme Coghetto,guilherme.coghetto@brasilrugby.com.br,55 51 99011-5420,Coaching,Diciembre 2025
-47,URP,Federico Puerari,federicopuerari2@gmail.com,543816643505,Coaching,Diciembre 2025
-48,URP,Juan Avila,juan.avila@urp.org.py,543816637538,Coaching,Diciembre 2025
-49,UAR,Juan Severino,severinosomozajuan@gmail.com,1144018265,Coaching,Diciembre 2025
-50,UAR,Hugo Schierano,hugoschierano@gmail.com,3515916089,Coaching,Diciembre 2025
-51,UAR,Pedro Fontanetto,pedrofontanetto@hotmail.com,3434389505,Coaching,Diciembre 2025
-52,Chile,Nicolas Fernandez Loipez,nfernandezlopez@chilerugby.org,,Coaching,Diciembre 2025
-53,CBRU,Tiago Campos,tiago.campos@brasilrugby.com.br,55 12 98156-4615,Preparación Física,Diciembre 2025
-54,URP,Pedro Torres,torrespedroleon179@gmail.com,595986639129,Preparación Física,Diciembre 2025
-55,UAR,Franco Godi,franco.godi@uar.com.ar,3413086262,Preparación Física,Diciembre 2025
-56,Chile,Marco Antonio Saldivia,msaldivia@chilerugby.org,,Preparación Física,Diciembre 2025
-57,URU,Florencia Brause,,+420 775 629 083,Preparación Física,Diciembre 2025
-58,URU,Tiziana Mesegues,irismesegues@gmail.com,598 98862556,Nutrición,Diciembre 2025
-59,CBRU,Eleonora Junqueira,eleonora.junqueira@brasilrugby.com.br,55 11 99100-0908,Nutrición,Diciembre 2025
-60,URP,Amanda Cattoni,daamandacattoni@gmail.com,595981934839,Nutrición,Diciembre 2025
-61,UAR,Fernanda Oviedo,oviedo.mfernanda@gmail.com,2616528179,Nutrición,Diciembre 2025
-62,URU,Sabrina Pastre,pastresabrina@gmail.com,598 98543676,Médico,Diciembre 2025
-63,CBRU,Renan Lederer,renan.lederer@brasilrugby.com.br,55 16 98161-0078,Médico,Diciembre 2025
-64,URP,Fernando Arrua,ferarrua012@gmail.com,595991972418,Médico,Diciembre 2025
-65,UAR,Franco Dellavedova,dellavedovafr@gmail.com,3415952087,Médico,Diciembre 2025
-66,Chile,Gonzalo Martinez,gmartinez@chilerugby.org,,Médico,Diciembre 2025
-67,URU,Juan Miguel Mello,juanmiguelmello2803@gmail.com,598 92987677,Video & Análisis,Diciembre 2025
-68,CBRU,Gustavo Pompeo,gustavo.pompeo@brasilrugby.com.br,55 11 97077-2047,Video & Análisis,Diciembre 2025
-69,UAR,Patricio Lasalle,,3415416778,Video & Análisis,Diciembre 2025
-70,INVITADO,Cristian Villarreal,crvillarreal@gmail.com,5493425441290,Video & Análisis,Diciembre 2025
-71,Chile,Camila Garcia,cgarcia@chilerugby.org,,Team Manager,Diciembre 2025
-72,URU,Valeria Agazzi,vale_agazzi@hotmail.com,598 99763435,Fisio,Diciembre 2025
-73,CBRU,Guilherme Sbecker,guilherme.sbecker@brasilrugby.com.br,55 12 982614678,Fisio,Diciembre 2025
-74,URP,Braulio Ojeda,ojedamaidanabraulio@gmail.com,595984130746,Fisio,Diciembre 2025
-75,UAR,Jualian Ezequiel Ciccarelli,julianciccarelli@hotmail.com,1130056249,Fisio,Diciembre 2025
-76,Chile,Jaime Figueroa,jfigueroa@chilerugby.org,,Fisio,Diciembre 2025
-77,INVITADO,Andrés Ernesto Hotham,,5493425080309,Fisio,Diciembre 2025
-78,INVITADO,María Cecilia Arangio,,,Fisio,Diciembre 2025
-79,INVITADO,Silvina Luna,,54934252226122,Fisio,Diciembre 2025
-80,URU,Rodrigo Masciadri,Rodrigo.portillo.masciadri@gmail.com,598 98405527,Match Official,Diciembre 2025
-81,URP,Nicolas Gavilan,nicogavilan91@gmail.com,595981398534,Match Official,Diciembre 2025
-82,Chile,Eduardo Herrera,eherrera@chilerugby.org,,Logística & Utilería,Diciembre 2025
-83,INVITADO,Lucas Bielkiewicz,lucasbielk@hotmail.com,3513969494,Logística & Utilería,Diciembre 2025
-84,UAR,Ignacio Arroyo ,,Celu/ 3415149938,Fisio,Diciembre 2025
-85,UAR,Matias Posada, matoposada@gmail.com,+54 9 3515383838,Team Manager,Diciembre 2025
-86,UAR,Agustin Altabe,altabeagustin@gmail.com,+54 9 362 4029651,Match Official,Diciembre
-87,Portugal - Cascáis rugby Club,Gabriel Ascarate,ascarategabriel@gmail.com,+54 9 3814 79-5344,Coaching,Diciembre 2025
-88,URP,Pablo Filippini,pablofilippini90@gmail.com,+54 9 11 5606 7066,Coaching,Diciembre 2025
+28,URU,Ignacio Inda,indacameignacio@gmail.com,+598 98 200 906,Team Manager,"Noviembre, 2024"
+29,URP,Oscar Mendez,omendez@urp.org.py,595 971 207507,Team Manager,"Noviembre, 2024"
+30,FCR,Manuela Caicedo,managertucanes@colombia.rugby,573166295498,Team Manager,"Noviembre, 2024"
+31,UAR,Ferreyra Orlando ,orlandoferreyra10@hotmail.com,,Team Manager,"Noviembre, 2024"
+32,CBRu,Felipe Braun,felipe.braun@brasilrugby.com.br,+55 11 95599-1819,Team Manager,"Noviembre, 2024"
+33,URU,Santiago Antinori,Santian_a@hotmail.com,+54 9 3857 67 5816,Fisio,"Noviembre, 2024"
+34,URP,Rocio Bareiro,bareiroro14@gmail.com,595 994 489373,Fisio,"Noviembre, 2024"
+35,Chile,Joaquin Ibañez,jibanez@chilerugby.org,56998880284,Fisio,"Noviembre, 2024"
+36,UAR,Martearena Maximo,maximomartearena@gmail.com,,Fisio,"Noviembre, 2024"
+37,CBRu,Bruno Godoy,bruno.godoy@brasilrugby.com.br,+55 12 99185-3794,Fisio,"Noviembre, 2024"
+38,URU,Rodrigo Masciardi,rodrigo.portillo.masciadri@gmail.com,+598 98 405 527,Match Official,"Noviembre, 2024"
+39,FCR,Luis Laino,referato@colombia.rugby,573012679065,Match Official,"Noviembre, 2024"
+40,UAR,UAR,,,Match Official,"Noviembre, 2024"
+41,URP,Axel Cortazar,axel.cortazar40@gmail.com,595982482985,Match Official,"Noviembre, 2024"
+42,FCR,Andres Santos,competencias@colombia.rugby,573215383753,Logística & Utilería,"Noviembre, 2024"
+43,URU,Santiago Suarez,,,Logística & Utilería,"Noviembre, 2024"
+44,FER,Juan Gonzalez,juan.gonzalez.marruecos@gmail.com,34637777075,Coaching,"Noviembre, 2024"
+45,FCR,Lissete Carolina Martinez,capacitaciones@colombia.rugby,57 310 4338416,Coaching,"Diciembre, 2023"
+46,URU,Ivo Dugonjic,dugonjic.ivo@gmail.com,598 99388149,Coaching,Diciembre 2025
+47,CBRU,Guilherme Coghetto,guilherme.coghetto@brasilrugby.com.br,55 51 99011-5420,Coaching,Diciembre 2025
+48,URP,Federico Puerari,federicopuerari2@gmail.com,543816643505,Coaching,Diciembre 2025
+49,URP,Juan Avila,juan.avila@urp.org.py,543816637538,Coaching,Diciembre 2025
+50,UAR,Juan Severino,severinosomozajuan@gmail.com,1144018265,Coaching,Diciembre 2025
+51,UAR,Hugo Schierano,hugoschierano@gmail.com,3515916089,Coaching,Diciembre 2025
+52,UAR,Pedro Fontanetto,pedrofontanetto@hotmail.com,3434389505,Coaching,Diciembre 2025
+53,Chile,Nicolas Fernandez Loipez,nfernandezlopez@chilerugby.org,,Coaching,Diciembre 2025
+54,CBRU,Tiago Campos,tiago.campos@brasilrugby.com.br,55 12 98156-4615,Preparación Física,Diciembre 2025
+55,URP,Pedro Torres,torrespedroleon179@gmail.com,595986639129,Preparación Física,Diciembre 2025
+56,UAR,Franco Godi,franco.godi@uar.com.ar,3413086262,Preparación Física,Diciembre 2025
+57,Chile,Marco Antonio Saldivia,msaldivia@chilerugby.org,,Preparación Física,Diciembre 2025
+58,URU,Florencia Brause,,+420 775 629 083,Preparación Física,Diciembre 2025
+59,URU,Tiziana Mesegues,irismesegues@gmail.com,598 98862556,Nutrición,Diciembre 2025
+60,CBRU,Eleonora Junqueira,eleonora.junqueira@brasilrugby.com.br,55 11 99100-0908,Nutrición,Diciembre 2025
+61,URP,Amanda Cattoni,daamandacattoni@gmail.com,595981934839,Nutrición,Diciembre 2025
+62,UAR,Fernanda Oviedo,oviedo.mfernanda@gmail.com,2616528179,Nutrición,Diciembre 2025
+63,URU,Sabrina Pastre,pastresabrina@gmail.com,598 98543676,Médico,Diciembre 2025
+64,CBRU,Renan Lederer,renan.lederer@brasilrugby.com.br,55 16 98161-0078,Médico,Diciembre 2025
+65,URP,Fernando Arrua,ferarrua012@gmail.com,595991972418,Médico,Diciembre 2025
+66,UAR,Franco Dellavedova,dellavedovafr@gmail.com,3415952087,Médico,Diciembre 2025
+67,Chile,Gonzalo Martinez,gmartinez@chilerugby.org,,Médico,Diciembre 2025
+68,URU,Juan Miguel Mello,juanmiguelmello2803@gmail.com,598 92987677,Video & Análisis,Diciembre 2025
+69,CBRU,Gustavo Pompeo,gustavo.pompeo@brasilrugby.com.br,55 11 97077-2047,Video & Análisis,Diciembre 2025
+70,UAR,Patricio Lasalle,,3415416778,Video & Análisis,Diciembre 2025
+71,INVITADO,Cristian Villarreal,crvillarreal@gmail.com,5493425441290,Video & Análisis,Diciembre 2025
+72,Chile,Camila Garcia,cgarcia@chilerugby.org,,Team Manager,Diciembre 2025
+73,URU,Valeria Agazzi,vale_agazzi@hotmail.com,598 99763435,Fisio,Diciembre 2025
+74,CBRU,Guilherme Sbecker,guilherme.sbecker@brasilrugby.com.br,55 12 982614678,Fisio,Diciembre 2025
+75,URP,Braulio Ojeda,ojedamaidanabraulio@gmail.com,595984130746,Fisio,Diciembre 2025
+76,UAR,Jualian Ezequiel Ciccarelli,julianciccarelli@hotmail.com,1130056249,Fisio,Diciembre 2025
+77,Chile,Jaime Figueroa,jfigueroa@chilerugby.org,,Fisio,Diciembre 2025
+78,INVITADO,Andrés Ernesto Hotham,,5493425080309,Fisio,Diciembre 2025
+79,INVITADO,María Cecilia Arangio,,,Fisio,Diciembre 2025
+80,INVITADO,Silvina Luna,,54934252226122,Fisio,Diciembre 2025
+81,URU,Rodrigo Masciadri,Rodrigo.portillo.masciadri@gmail.com,598 98405527,Match Official,Diciembre 2025
+82,URP,Nicolas Gavilan,nicogavilan91@gmail.com,595981398534,Match Official,Diciembre 2025
+83,Chile,Eduardo Herrera,eherrera@chilerugby.org,,Logística & Utilería,Diciembre 2025
+84,INVITADO,Lucas Bielkiewicz,lucasbielk@hotmail.com,3513969494,Logística & Utilería,Diciembre 2025
+85,UAR,Ignacio Arroyo ,,Celu/ 3415149938,Fisio,Diciembre 2025
+86,UAR,Matias Posada, matoposada@gmail.com,+54 9 3515383838,Team Manager,Diciembre 2025
+87,UAR,Agustin Altabe,altabeagustin@gmail.com,+54 9 362 4029651,Match Official,Diciembre
+88,Portugal - Cascáis rugby Club,Gabriel Ascarate,ascarategabriel@gmail.com,+54 9 3814 79-5344,Coaching,Diciembre 2025
+89,URP,Pablo Filippini,pablofilippini90@gmail.com,+54 9 11 5606 7066,Coaching,Diciembre 2025
+90,URU,Diego Lamelas,diegolamelas@gmail.com,+54 9 11 6390-1101,Coaching,Diciembre 2026
+91,URU,Martín Brancato,martinbrancato91@gmail.com,+598 98 873 570,Coaching,Diciembre 2026
+92,URP,Ignacio Basterra,nabasterra96@gmail.com,+54 362 477-5754,Coaching,Diciembre 2026
+93,UAR,Pedro Imhoff,pedroimhoff9@gmail.com,+54 9 341 682-1335,Coaching,Diciembre 2026
+94,UAR,Santiago García Botta,santiago_gb@hotmail.com,+54 9 11 5593-6718,Coaching,Diciembre 2026
+95,UAR,Lucas Schonamsgruber,lschonamsgruber@gmail.com,+54 9 11 7385-0145,Coaching,Diciembre 2026
+96,Chile,Percy Rasmussen,prasmussen@chilerugby.org,+56 9 7125 3470,Coaching,Diciembre 2026
+97,INVITADO,Ignacio Rodriguez,,,Coaching,Diciembre 2026
+98,INVITADO,Felipe Caino / Carlos Caceres,,,Coaching,Diciembre 2026
+99,URU,Sebastián Golarte,sebagolarte.sg@gmail.com,+598 92 120 912,Preparación Física,Diciembre 2026
+100,CBRU,Joao Vicente Soares,joao.vicente@brasilrugby.com.br,+55 11 98624-9050,Preparación Física,Diciembre 2026
+101,UAR,Maximiliano Soria,maximiliano.soria@uar.com.ar,+54 9 351 529-8895,Preparación Física,Diciembre 2026
+102,Chile,Fernando Figueroa,ffigueroa@chilerugby.org,+56 9 3343 7176,Preparación Física,Diciembre 2026
+103,INVITADO,Rodrigo Adrian Villamagna Solis,rovillamagna@gmail.com,54 9 0351 3200824,Preparación Física,Diciembre 2026
+104,URU,Agustina Muñiz,agustina.muniz.cei@gmail.com,+598 99 520 135,Nutrición,Diciembre 2026
+105,CBRU,Bruna Callegari,bruna.callegari@brasilrugby.com.br,+55 11 96452-1571,Nutrición,Diciembre 2026
+106,URP,María Belén Britez Burro,belenbritez98@gmail.com,+595 981 108571,Nutrición,Diciembre 2026
+107,UAR,Florencia López Meyer,liclopezmeyer@gmail.com,+54 9 11 6849-3222,Nutrición,Diciembre 2026
+108,Chile,Triana Fernández,tfernandezandreani@gmail.com,+56 9 8741 2967,Nutrición,Diciembre 2026
+109,URU,Emmanuel Lorenzo,emmanuellorenzorocha@hotmail.com,+598 91 208 994,Médico,Diciembre 2026
+110,CBRU,Thiago Macota,thiago.macota@brasilrugby.com.br,+55 11 96338-8020,Médico,Diciembre 2026
+111,URP,Danilo Trinidad,odts2017@gmail.com,+595 971 223227,Médico,Diciembre 2026
+112,UAR,Santiago Cativiela,drscativiela@gmail.com,+54 9 3476 61-5920,Médico,Diciembre 2026
+113,Chile,Florencia Gómez,florencia.gomez.ivars@gmail.com,+56 9 5412 8472,Médico,Diciembre 2026
+114,CBRU,Luiz Felipe Silva,felipe.silva.270901@gmail.com,+55 12 99790-1191,Video & Análisis,Diciembre 2026
+115,Chile,Nicolás Tapia,ntapia@chilerugby.org,+56 9 7865 6088,Video & Análisis,Diciembre 2026
+116,URU,Rafael Bianchi,rafael.bianchi.algorta@gmail.com,+598 99 659 068,Team Manager,Diciembre 2026
+117,UAR,Juan Ignacio Vattuone,juan.vattuone@uar.com.ar,+54 9 11 5912-8558,Team Manager,Diciembre 2026
+118,Chile,Germán Saavedra,gsaavedra@chilerugby.org,+56 9 5358 3613,Team Manager,Diciembre 2026
+119,INVITADO,Maria Gabriela Noya,,+549 3424078879,Team Manager,Diciembre 2026
+120,CBRU,Mateus Barbosa,mateus.barbosa@brasilrugby.com.br,+55 11 95741-6189,Fisio,Diciembre 2026
+121,UAR,Leandro Pierucci,leanpi@hotmail.com,+54 9 341 323-3245,Fisio,Diciembre 2026
+122,Chile,Felipe Galaz,fgalaz@chilerugby.org,+56 9 7200 3969,Fisio,Diciembre 2026
+123,INVITADO,Silvana Mariel  Luna,lunasilvanamariel@gmail.com,+549 3425226122,Fisio,Diciembre 2026
+124,URU,Juan Luca Terra,juanluterra04@gmail.com,+598 98 606 695,Match Official,Diciembre 2026
+125,UAR,Joaquín Zapata,joaquin_zapata_@outlook.com,+54 9 342 530-0942,Match Official,Diciembre 2026
+126,URU,Felipe Alonso,feloalonso97@gmail.com,+598 96 113 197,Logística & Utilería,Diciembre 2026
+127,UAR,Federico Bonesso,bonessofederico@gmail.com,+54 9 341 601-3137,Logística & Utilería,Diciembre 2026

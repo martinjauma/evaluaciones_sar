@@ -18,3 +18,6 @@ __pycache__/
 # Ignorar archivos generados por la aplicación
 evaluacion_final.pdf
 evaluacion_final_en.pdf
+
+# Next.js Fullstack Web App (Repositorio separado en github.com/martinjauma/sar.git)
+sar-web/

@@ -179,6 +179,7 @@ def main():
     st.title("Generador de Evaluaciones")
 
     header_options = {
+        "SAR 2026": "images/header_2026.png",
         "SAR 2025": "images/header_2025.png",
         "SAR 2024": "images/header_2024.png",
         "SAR 2023": "images/header_2023.png"
